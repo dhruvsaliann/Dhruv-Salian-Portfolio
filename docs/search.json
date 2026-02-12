@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Dhruv-Salian-Portfolio",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Dhruv Salian",
+    "section": "",
+    "text": "Dhruv Salian is a Software Engineering major with a minor in Data Science at California State University, Monterey Bay."
+  },
+  {
+    "objectID": "about.html#education",
+    "href": "about.html#education",
+    "title": "Dhruv Salian",
+    "section": "Education",
+    "text": "Education\nCalifornia State University, Monterey Bay | Marina, CA\nB.S. in Computer Science (Software Engineering) | Expected May 2026\nVidyalankar International Institute of Education | Mumbai, India\nB.S. in Information Technology | 2024"
+  },
+  {
+    "objectID": "about.html#experience",
+    "href": "about.html#experience",
+    "title": "Dhruv Salian",
+    "section": "Experience",
+    "text": "Experience\nOlympiah | Software Engineer | Jan 2025 – May 2025\nCompass Higher Ed. Inc | Software Assistant | Aug 2025 – Nov 2025\nVidyalankar International Institute of Technology | Student Assistant | Oct 2022 – Aug 2023"
+  }
+]
