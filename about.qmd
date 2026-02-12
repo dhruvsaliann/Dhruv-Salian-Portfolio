@@ -1,9 +1,34 @@
 ---
-title: "About"
+title: "Dhruv Salian"
+about:Hi, I’m Dhruv Salian. I’m a Software Engineering major with a minor in Data Science and an international student who enjoys building practical, real-world solutions.
+
+I’m interested in both software development and working with data. I like solving problems, learning new technologies, and improving my skills through projects and coursework.
+  template: jolla
+  image: Portfolio.jpg
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/dhruv-salian-414a34306/
+    - icon: github
+      text: Github
+      href: https://github.com/dhruvsaliann
+      
+content: |
+    Dhruv Salian is a Software Engineering major with a minor in Data Science at California State University, Monterey Bay.
+
+    ## Education
+
+    **California State University, Monterey Bay** | Marina, CA  
+    B.S. in Computer Science (Software Engineering) | Expected May 2026  
+
+    **Vidyalankar International Institute of Education** | Mumbai, India  
+    B.S. in Information Technology | 2024  
+
+    ## Experience
+
+    **Olympiah** | Software Engineer | Jan 2025 – May 2025  
+
+    **Compass Higher Ed. Inc** | Software Assistant | Aug 2025 – Nov 2025  
+
+    **Vidyalankar International Institute of Technology** | Student Assistant | Oct 2022 – Aug 2023        
 ---
-
-About this site
-
-```{r}
-1 + 1
-```
