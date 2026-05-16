@@ -5,10 +5,24 @@ title: "Home"
 # Dhruv Salian
 
 Software Engineering major • Data Science minor • International student
-I’m a full-stack software engineer focused on developer tooling, platform engineering, release automation, and scalable web applications. This year, I’ve been building systems that remove the guesswork from complex multi-service deployments modeling service dependencies as directed graphs, generating topologically sorted release plans, and creating structured runbooks that help engineering teams ship with more confidence, consistency, and failure awareness. I also enjoy building product-facing software that is fast, intuitive, and reliable. I’ve developed scalable REST APIs and dynamic React/Node.js experiences that improved page load times by 30%, because performance, usability, and clean architecture all shape the user experience.
 
+I'm a full-stack software engineer and Computer Science student at Cal State 
+Monterey Bay, minoring in Data Science.
 
+I build developer tools, platform systems and scalable web applications. 
+Most recently I've been working on release automation systems that model 
+service dependencies and generate structured deployment plans  helping 
+engineering teams ship software with more confidence and less guesswork.
 
-My stack includes React, Next.js, Node.js, JavaScript, TypeScript, Python, REST APIs, and modern web technologies. I’m especially drawn to work where strong engineering improves how people build, ship, and use software. I care deeply about thoughtful design, developer experience, system reliability, and building products that don’t just work, they make life easier. I’m currently completing my B.S. in Computer Science at Cal State Monterey Bay, with a minor in Data Science, and I’m seeking opportunities in full-stack engineering, platform engineering, developer infrastructure, and developer-facing products. I’m excited to build tools and systems that make software teams faster, safer, and more effective.
+On the product side I enjoy building REST APIs and React/Next.js applications 
+that are fast, clean and easy to use. I care a lot about developer experience, 
+system reliability, and writing code that actually makes things easier for the 
+people using it.
 
-Welcome to my portfolio.
+My stack includes React, Next.js, Node.js, TypeScript, Python, and REST APIs.
+
+I'm currently looking for opportunities in full-stack engineering, platform 
+engineering, and developer tooling — places where good engineering directly 
+improves how teams build and ship software.
+
+##WELCOME TO MY PORTFOLIO

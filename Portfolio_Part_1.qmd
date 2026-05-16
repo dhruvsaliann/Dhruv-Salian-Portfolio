@@ -41,7 +41,14 @@ These variables include a mix of numeric, character, and logical types.
 
 ### What do you want your final visualizations to look like?
 
-For the first question I plan to create a boxplot comparing the popularity score distributions of explicit and non-explicit songs side by side. For the second question I plan to create a scatterplot showing the relationship between loudness and popularity with a trend line to highlight the direction of the relationship. For the third question I plan to create a horizontal bar chart comparing average popularity across low, medium, and high acousticness groups.
+### What do you want your final visualizations to look like?
+
+For the first question I plan to create a violin plot comparing the 
+distribution of popularity scores between explicit and non-explicit songs. 
+For the second question I plan to create a line chart showing how average 
+popularity changes across four loudness groups from very quiet to very loud. 
+For the third question I plan to create a horizontal bar chart comparing 
+average popularity across low, medium, and high acousticness groups.
 
 ### What do you want to highlight in your visualizations?
 
@@ -121,7 +128,7 @@ summary(spotify)
 ```{r}
 #| label: clean-data
 
-# Step 1: SELECT only the columns relevant to our research questions
+# keeping only what i need for my analysis
 spotify_clean <- spotify |>
   select(
     track_name,
@@ -137,8 +144,8 @@ spotify_clean <- spotify |>
     tempo
   )
 
-# Step 2: FILTER out missing values and songs with zero popularity
-# Zero popularity songs are usually unlisted or unreleased
+# removing songs with missing values and zero popularity
+# zero popularity usually means the song isnt publicly available
 spotify_clean <- spotify_clean |>
   filter(
     !is.na(popularity),
@@ -148,19 +155,18 @@ spotify_clean <- spotify_clean |>
     popularity > 0
   )
 
-# Step 3: MUTATE to reformat the explicit variable
-# Converts True/False text into a clean labeled factor
+# converting explicit from True/False text to proper labels
 spotify_clean <- spotify_clean |>
   mutate(
     explicit = case_when(
-      explicit == "True"  ~ "Explicit",
-      explicit == "False" ~ "Not Explicit"
+      explicit == TRUE  | explicit == "True"  ~ "Explicit",
+      explicit == FALSE | explicit == "False" ~ "Not Explicit",
+      TRUE ~ "Not Explicit"
     ),
     explicit = factor(explicit, levels = c("Not Explicit", "Explicit"))
   )
 
-# Step 4: MUTATE to create acousticness groups
-# Groups songs into Low, Medium, High acousticness for easier comparison
+# grouping acousticness into three levels so its easier to compare
 spotify_clean <- spotify_clean |>
   mutate(
     acousticness_level = case_when(
@@ -174,12 +180,11 @@ spotify_clean <- spotify_clean |>
     )
   )
 
-# Step 5: DISTINCT to remove duplicate songs
-# Keeps only one entry per unique song and artist combination
+# removing duplicate songs so each track only shows up once
 spotify_clean <- spotify_clean |>
   distinct(track_name, artists, .keep_all = TRUE)
 
-# Step 6: SUMMARIZE average popularity by acousticness group
+# getting average popularity per acousticness group for the bar chart
 acousticness_summary <- spotify_clean |>
   group_by(acousticness_level) |>
   summarize(
@@ -188,7 +193,6 @@ acousticness_summary <- spotify_clean |>
   ) |>
   arrange(desc(avg_popularity))
 
-# Check cleaned data
 glimpse(spotify_clean)
 summary(spotify_clean)
 ```

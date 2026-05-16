@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dhruv Salian">
+
+<title>Portfolio Part 1: Development and Planning – Dhruv’s Portfolio</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Dhruv’s Portfolio</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About Me</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./spotify-project.html"> 
+<span class="menu-text">Spotify Project</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#data-description" id="toc-data-description" class="nav-link active" data-scroll-target="#data-description">Data Description</a>
+  <ul class="collapse">
+  <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source">Data Source</a></li>
+  <li><a href="#description-of-data" id="toc-description-of-data" class="nav-link" data-scroll-target="#description-of-data">Description of Data</a></li>
+  <li><a href="#research-questions" id="toc-research-questions" class="nav-link" data-scroll-target="#research-questions">Research Questions</a></li>
+  </ul></li>
+  <li><a href="#data-visualization" id="toc-data-visualization" class="nav-link" data-scroll-target="#data-visualization">Data Visualization</a>
+  <ul class="collapse">
+  <li><a href="#what-do-you-want-your-final-visualizations-to-look-like" id="toc-what-do-you-want-your-final-visualizations-to-look-like" class="nav-link" data-scroll-target="#what-do-you-want-your-final-visualizations-to-look-like">What do you want your final visualizations to look like?</a></li>
+  <li><a href="#what-do-you-want-your-final-visualizations-to-look-like-1" id="toc-what-do-you-want-your-final-visualizations-to-look-like-1" class="nav-link" data-scroll-target="#what-do-you-want-your-final-visualizations-to-look-like-1">What do you want your final visualizations to look like?</a></li>
+  <li><a href="#what-do-you-want-to-highlight-in-your-visualizations" id="toc-what-do-you-want-to-highlight-in-your-visualizations" class="nav-link" data-scroll-target="#what-do-you-want-to-highlight-in-your-visualizations">What do you want to highlight in your visualizations?</a></li>
+  <li><a href="#what-is-missing-from-your-data-or-needs-to-change" id="toc-what-is-missing-from-your-data-or-needs-to-change" class="nav-link" data-scroll-target="#what-is-missing-from-your-data-or-needs-to-change">What is missing from your data or needs to change?</a></li>
+  </ul></li>
+  <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link" data-scroll-target="#data-cleaning">Data Cleaning</a>
+  <ul class="collapse">
+  <li><a href="#do-you-need-to-reformat-variables" id="toc-do-you-need-to-reformat-variables" class="nav-link" data-scroll-target="#do-you-need-to-reformat-variables">Do you need to reformat variables?</a></li>
+  <li><a href="#do-you-need-to-deal-with-missing-data" id="toc-do-you-need-to-deal-with-missing-data" class="nav-link" data-scroll-target="#do-you-need-to-deal-with-missing-data">Do you need to deal with missing data?</a></li>
+  <li><a href="#do-you-need-to-filter-your-data" id="toc-do-you-need-to-filter-your-data" class="nav-link" data-scroll-target="#do-you-need-to-filter-your-data">Do you need to filter your data?</a></li>
+  <li><a href="#do-you-need-to-create-new-variables" id="toc-do-you-need-to-create-new-variables" class="nav-link" data-scroll-target="#do-you-need-to-create-new-variables">Do you need to create new variables?</a></li>
+  <li><a href="#do-you-need-to-join-additional-data" id="toc-do-you-need-to-join-additional-data" class="nav-link" data-scroll-target="#do-you-need-to-join-additional-data">Do you need to join additional data?</a></li>
+  <li><a href="#do-you-need-to-pivot-your-data" id="toc-do-you-need-to-pivot-your-data" class="nav-link" data-scroll-target="#do-you-need-to-pivot-your-data">Do you need to pivot your data?</a></li>
+  <li><a href="#do-you-need-to-summarize-variables" id="toc-do-you-need-to-summarize-variables" class="nav-link" data-scroll-target="#do-you-need-to-summarize-variables">Do you need to summarize variables?</a></li>
+  <li><a href="#what-other-cleaning-is-needed" id="toc-what-other-cleaning-is-needed" class="nav-link" data-scroll-target="#what-other-cleaning-is-needed">What other cleaning is needed?</a></li>
+  <li><a href="#are-there-variables-you-can-exclude" id="toc-are-there-variables-you-can-exclude" class="nav-link" data-scroll-target="#are-there-variables-you-can-exclude">Are there variables you can exclude?</a></li>
+  </ul></li>
+  <li><a href="#initial-setup" id="toc-initial-setup" class="nav-link" data-scroll-target="#initial-setup">Initial Setup</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Portfolio Part 1: Development and Planning</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dhruv Salian </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="data-description" class="level2">
+<h2 class="anchored" data-anchor-id="data-description">Data Description</h2>
+<section id="data-source" class="level3">
+<h3 class="anchored" data-anchor-id="data-source">Data Source</h3>
+<p>For this project I will use a Spotify dataset obtained from Kaggle, specifically the “Spotify Tracks Dataset.” This dataset contains information about songs on Spotify including audio features and popularity scores. The dataset can be accessed at: https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset</p>
+</section>
+<section id="description-of-data" class="level3">
+<h3 class="anchored" data-anchor-id="description-of-data">Description of Data</h3>
+<p>Each row in the dataset represents a single song. The dataset includes several variables such as:</p>
+<ul>
+<li><strong>track_name</strong> (character): the name of the song</li>
+<li><strong>artists</strong> (character): the artist(s) who performed the song</li>
+<li><strong>popularity</strong> (numeric): a score from 0–100 representing how popular the song is</li>
+<li><strong>explicit</strong> (logical): whether the song contains explicit content or not</li>
+<li><strong>loudness</strong> (numeric): how loud the song is, measured in decibels</li>
+<li><strong>acousticness</strong> (numeric): how acoustic the song sounds, from 0 (electronic) to 1 (fully acoustic)</li>
+<li><strong>danceability</strong> (numeric): how suitable a track is for dancing</li>
+<li><strong>energy</strong> (numeric): intensity and activity level of the song</li>
+<li><strong>valence</strong> (numeric): positivity or mood of the song</li>
+<li><strong>tempo</strong> (numeric): speed of the song in beats per minute</li>
+<li><strong>track_genre</strong> (character): the genre the song belongs to</li>
+</ul>
+<p>These variables include a mix of numeric, character, and logical types.</p>
+</section>
+<section id="research-questions" class="level3">
+<h3 class="anchored" data-anchor-id="research-questions">Research Questions</h3>
+<ol type="1">
+<li>Do explicit songs tend to be more popular than non-explicit songs on Spotify?</li>
+<li>Do louder songs tend to be more popular — is there a relationship between loudness and popularity?</li>
+<li>Are acoustic songs less popular than electronic-sounding ones on Spotify?</li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="data-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="data-visualization">Data Visualization</h2>
+<section id="what-do-you-want-your-final-visualizations-to-look-like" class="level3">
+<h3 class="anchored" data-anchor-id="what-do-you-want-your-final-visualizations-to-look-like">What do you want your final visualizations to look like?</h3>
+</section>
+<section id="what-do-you-want-your-final-visualizations-to-look-like-1" class="level3">
+<h3 class="anchored" data-anchor-id="what-do-you-want-your-final-visualizations-to-look-like-1">What do you want your final visualizations to look like?</h3>
+<p>For the first question I plan to create a violin plot comparing the distribution of popularity scores between explicit and non-explicit songs. For the second question I plan to create a line chart showing how average popularity changes across four loudness groups from very quiet to very loud. For the third question I plan to create a horizontal bar chart comparing average popularity across low, medium, and high acousticness groups.</p>
+</section>
+<section id="what-do-you-want-to-highlight-in-your-visualizations" class="level3">
+<h3 class="anchored" data-anchor-id="what-do-you-want-to-highlight-in-your-visualizations">What do you want to highlight in your visualizations?</h3>
+<p>I want to highlight whether certain song characteristics — like being explicit, being louder, or being more acoustic — are connected to how popular a song becomes on Spotify. Each visualization will focus on one characteristic and show clearly whether songs with that trait tend to perform better or worse in terms of popularity.</p>
+</section>
+<section id="what-is-missing-from-your-data-or-needs-to-change" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-missing-from-your-data-or-needs-to-change">What is missing from your data or needs to change?</h3>
+<p>The acousticness variable is a continuous number from 0 to 1, so I will need to group it into Low, Medium, and High categories to make comparisons easier. The explicit variable is stored as text and may need to be converted to a proper logical or factor format for clean visualization.</p>
+<hr>
+</section>
+</section>
+<section id="data-cleaning" class="level2">
+<h2 class="anchored" data-anchor-id="data-cleaning">Data Cleaning</h2>
+<section id="do-you-need-to-reformat-variables" class="level3">
+<h3 class="anchored" data-anchor-id="do-you-need-to-reformat-variables">Do you need to reformat variables?</h3>
+<p>Yes. I will need to make sure numeric variables like loudness, acousticness, and popularity are correctly formatted. I will also convert the explicit variable from text into a proper labeled format so it reads clearly in visualizations.</p>
+</section>
+<section id="do-you-need-to-deal-with-missing-data" class="level3">
+<h3 class="anchored" data-anchor-id="do-you-need-to-deal-with-missing-data">Do you need to deal with missing data?</h3>
+<p>Yes. I will check all key variables for missing values and remove any rows where important fields are blank or unavailable.</p>
+</section>
+<section id="do-you-need-to-filter-your-data" class="level3">
+<h3 class="anchored" data-anchor-id="do-you-need-to-filter-your-data">Do you need to filter your data?</h3>
+<p>Yes. I will remove songs with a popularity score of zero since those are typically unlisted or unreleased tracks that are not actually available to listeners and would skew the results.</p>
+</section>
+<section id="do-you-need-to-create-new-variables" class="level3">
+<h3 class="anchored" data-anchor-id="do-you-need-to-create-new-variables">Do you need to create new variables?</h3>
+<p>Yes. I will create a grouped acousticness variable with three levels — Low, Medium, and High — to make it easier to compare acoustic versus electronic songs visually.</p>
+</section>
+<section id="do-you-need-to-join-additional-data" class="level3">
+<h3 class="anchored" data-anchor-id="do-you-need-to-join-additional-data">Do you need to join additional data?</h3>
+<p>No.&nbsp;The dataset already contains all the variables needed for this analysis.</p>
+</section>
+<section id="do-you-need-to-pivot-your-data" class="level3">
+<h3 class="anchored" data-anchor-id="do-you-need-to-pivot-your-data">Do you need to pivot your data?</h3>
+<p>No.&nbsp;The dataset is already in a usable format where each row is one song.</p>
+</section>
+<section id="do-you-need-to-summarize-variables" class="level3">
+<h3 class="anchored" data-anchor-id="do-you-need-to-summarize-variables">Do you need to summarize variables?</h3>
+<p>Yes. I will calculate average popularity scores for each group in the acousticness and explicit comparisons so the bar chart and boxplot are easy to interpret.</p>
+</section>
+<section id="what-other-cleaning-is-needed" class="level3">
+<h3 class="anchored" data-anchor-id="what-other-cleaning-is-needed">What other cleaning is needed?</h3>
+<p>I will remove duplicate songs so each track only appears once in the analysis. I will also remove any columns that are not relevant to my research questions, such as track IDs and album names.</p>
+</section>
+<section id="are-there-variables-you-can-exclude" class="level3">
+<h3 class="anchored" data-anchor-id="are-there-variables-you-can-exclude">Are there variables you can exclude?</h3>
+<p>Yes. I plan to exclude variables like track ID, album name, key, mode, time signature, speechiness, instrumentalness, liveness, and tempo since they are not directly relevant to the three research questions I am investigating.</p>
+<hr>
+</section>
+</section>
+<section id="initial-setup" class="level2">
+<h2 class="anchored" data-anchor-id="initial-setup">Initial Setup</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.0     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.2     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'here' was built under R version 4.5.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>here() starts at C:/Users/DhruvS/Documents/STAT210/Labs/Dhruv-Salian-Portfolio</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import data</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>spotify <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"dataset.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 114000 Columns: 21
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: "," chr
+(5): track_id, artists, album_name, track_name, track_genre dbl (15): ...1,
+popularity, duration_ms, danceability, energy, key, loudness... lgl (1):
+explicit
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...1`</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview data</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(spotify)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 114,000
+Columns: 21
+$ ...1             &lt;dbl&gt; 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,…
+$ track_id         &lt;chr&gt; "5SuOikwiRyPMVoIQDJUgSV", "4qPNDBW1i3p13qLCt0Ki3A", "…
+$ artists          &lt;chr&gt; "Gen Hoshino", "Ben Woodward", "Ingrid Michaelson;ZAY…
+$ album_name       &lt;chr&gt; "Comedy", "Ghost (Acoustic)", "To Begin Again", "Craz…
+$ track_name       &lt;chr&gt; "Comedy", "Ghost - Acoustic", "To Begin Again", "Can'…
+$ popularity       &lt;dbl&gt; 73, 55, 57, 71, 82, 58, 74, 80, 74, 56, 74, 69, 52, 6…
+$ duration_ms      &lt;dbl&gt; 230666, 149610, 210826, 201933, 198853, 214240, 22940…
+$ explicit         &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALS…
+$ danceability     &lt;dbl&gt; 0.676, 0.420, 0.438, 0.266, 0.618, 0.688, 0.407, 0.70…
+$ energy           &lt;dbl&gt; 0.4610, 0.1660, 0.3590, 0.0596, 0.4430, 0.4810, 0.147…
+$ key              &lt;dbl&gt; 1, 1, 0, 0, 2, 6, 2, 11, 0, 1, 8, 4, 7, 3, 2, 4, 2, 1…
+$ loudness         &lt;dbl&gt; -6.746, -17.235, -9.734, -18.515, -9.681, -8.807, -8.…
+$ mode             &lt;dbl&gt; 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0,…
+$ speechiness      &lt;dbl&gt; 0.1430, 0.0763, 0.0557, 0.0363, 0.0526, 0.1050, 0.035…
+$ acousticness     &lt;dbl&gt; 0.0322, 0.9240, 0.2100, 0.9050, 0.4690, 0.2890, 0.857…
+$ instrumentalness &lt;dbl&gt; 1.01e-06, 5.56e-06, 0.00e+00, 7.07e-05, 0.00e+00, 0.0…
+$ liveness         &lt;dbl&gt; 0.3580, 0.1010, 0.1170, 0.1320, 0.0829, 0.1890, 0.091…
+$ valence          &lt;dbl&gt; 0.7150, 0.2670, 0.1200, 0.1430, 0.1670, 0.6660, 0.076…
+$ tempo            &lt;dbl&gt; 87.917, 77.489, 76.332, 181.740, 119.949, 98.017, 141…
+$ time_signature   &lt;dbl&gt; 4, 4, 4, 3, 4, 4, 3, 4, 4, 4, 4, 3, 4, 4, 4, 3, 4, 4,…
+$ track_genre      &lt;chr&gt; "acoustic", "acoustic", "acoustic", "acoustic", "acou…</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(spotify)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      ...1          track_id           artists           album_name       
+ Min.   :     0   Length:114000      Length:114000      Length:114000     
+ 1st Qu.: 28500   Class :character   Class :character   Class :character  
+ Median : 57000   Mode  :character   Mode  :character   Mode  :character  
+ Mean   : 57000                                                           
+ 3rd Qu.: 85499                                                           
+ Max.   :113999                                                           
+  track_name          popularity      duration_ms       explicit      
+ Length:114000      Min.   :  0.00   Min.   :      0   Mode :logical  
+ Class :character   1st Qu.: 17.00   1st Qu.: 174066   FALSE:104253   
+ Mode  :character   Median : 35.00   Median : 212906   TRUE :9747     
+                    Mean   : 33.24   Mean   : 228029                  
+                    3rd Qu.: 50.00   3rd Qu.: 261506                  
+                    Max.   :100.00   Max.   :5237295                  
+  danceability        energy            key            loudness      
+ Min.   :0.0000   Min.   :0.0000   Min.   : 0.000   Min.   :-49.531  
+ 1st Qu.:0.4560   1st Qu.:0.4720   1st Qu.: 2.000   1st Qu.:-10.013  
+ Median :0.5800   Median :0.6850   Median : 5.000   Median : -7.004  
+ Mean   :0.5668   Mean   :0.6414   Mean   : 5.309   Mean   : -8.259  
+ 3rd Qu.:0.6950   3rd Qu.:0.8540   3rd Qu.: 8.000   3rd Qu.: -5.003  
+ Max.   :0.9850   Max.   :1.0000   Max.   :11.000   Max.   :  4.532  
+      mode         speechiness       acousticness    instrumentalness  
+ Min.   :0.0000   Min.   :0.00000   Min.   :0.0000   Min.   :0.00e+00  
+ 1st Qu.:0.0000   1st Qu.:0.03590   1st Qu.:0.0169   1st Qu.:0.00e+00  
+ Median :1.0000   Median :0.04890   Median :0.1690   Median :4.16e-05  
+ Mean   :0.6376   Mean   :0.08465   Mean   :0.3149   Mean   :1.56e-01  
+ 3rd Qu.:1.0000   3rd Qu.:0.08450   3rd Qu.:0.5980   3rd Qu.:4.90e-02  
+ Max.   :1.0000   Max.   :0.96500   Max.   :0.9960   Max.   :1.00e+00  
+    liveness         valence           tempo        time_signature 
+ Min.   :0.0000   Min.   :0.0000   Min.   :  0.00   Min.   :0.000  
+ 1st Qu.:0.0980   1st Qu.:0.2600   1st Qu.: 99.22   1st Qu.:4.000  
+ Median :0.1320   Median :0.4640   Median :122.02   Median :4.000  
+ Mean   :0.2136   Mean   :0.4741   Mean   :122.15   Mean   :3.904  
+ 3rd Qu.:0.2730   3rd Qu.:0.6830   3rd Qu.:140.07   3rd Qu.:4.000  
+ Max.   :1.0000   Max.   :0.9950   Max.   :243.37   Max.   :5.000  
+ track_genre       
+ Length:114000     
+ Class :character  
+ Mode  :character  
+                   
+                   
+                   </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># keeping only what i need for my analysis</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="ot">&lt;-</span> spotify <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    track_name,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    artists,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    track_genre,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    popularity,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    explicit,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    loudness,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    acousticness,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    danceability,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    energy,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    valence,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    tempo</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="co"># removing songs with missing values and zero popularity</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co"># zero popularity usually means the song isnt publicly available</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="ot">&lt;-</span> spotify_clean <span class="sc">|&gt;</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(popularity),</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(loudness),</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(acousticness),</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(explicit),</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    popularity <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="co"># converting explicit from True/False text to proper labels</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="ot">&lt;-</span> spotify_clean <span class="sc">|&gt;</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">explicit =</span> <span class="fu">case_when</span>(</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>      explicit <span class="sc">==</span> <span class="cn">TRUE</span>  <span class="sc">|</span> explicit <span class="sc">==</span> <span class="st">"True"</span>  <span class="sc">~</span> <span class="st">"Explicit"</span>,</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>      explicit <span class="sc">==</span> <span class="cn">FALSE</span> <span class="sc">|</span> explicit <span class="sc">==</span> <span class="st">"False"</span> <span class="sc">~</span> <span class="st">"Not Explicit"</span>,</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Not Explicit"</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">explicit =</span> <span class="fu">factor</span>(explicit, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Not Explicit"</span>, <span class="st">"Explicit"</span>))</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="co"># grouping acousticness into three levels so its easier to compare</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="ot">&lt;-</span> spotify_clean <span class="sc">|&gt;</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">acousticness_level =</span> <span class="fu">case_when</span>(</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>      acousticness <span class="sc">&lt;</span> <span class="fl">0.33</span>  <span class="sc">~</span> <span class="st">"Low Acousticness"</span>,</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>      acousticness <span class="sc">&lt;</span> <span class="fl">0.66</span>  <span class="sc">~</span> <span class="st">"Medium Acousticness"</span>,</span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>      acousticness <span class="sc">&gt;=</span> <span class="fl">0.66</span> <span class="sc">~</span> <span class="st">"High Acousticness"</span></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">acousticness_level =</span> <span class="fu">factor</span>(</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>      acousticness_level,</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Low Acousticness"</span>, <span class="st">"Medium Acousticness"</span>, <span class="st">"High Acousticness"</span>)</span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a><span class="co"># removing duplicate songs so each track only shows up once</span></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="ot">&lt;-</span> spotify_clean <span class="sc">|&gt;</span></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(track_name, artists, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a><span class="co"># getting average popularity per acousticness group for the bar chart</span></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>acousticness_summary <span class="ot">&lt;-</span> spotify_clean <span class="sc">|&gt;</span></span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(acousticness_level) <span class="sc">|&gt;</span></span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_popularity =</span> <span class="fu">mean</span>(popularity, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">count =</span> <span class="fu">n</span>()</span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(avg_popularity))</span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(spotify_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 76,585
+Columns: 12
+$ track_name         &lt;chr&gt; "Comedy", "Ghost - Acoustic", "To Begin Again", "Ca…
+$ artists            &lt;chr&gt; "Gen Hoshino", "Ben Woodward", "Ingrid Michaelson;Z…
+$ track_genre        &lt;chr&gt; "acoustic", "acoustic", "acoustic", "acoustic", "ac…
+$ popularity         &lt;dbl&gt; 73, 55, 57, 71, 82, 58, 74, 80, 74, 56, 74, 69, 52,…
+$ explicit           &lt;fct&gt; Not Explicit, Not Explicit, Not Explicit, Not Expli…
+$ loudness           &lt;dbl&gt; -6.746, -17.235, -9.734, -18.515, -9.681, -8.807, -…
+$ acousticness       &lt;dbl&gt; 0.0322, 0.9240, 0.2100, 0.9050, 0.4690, 0.2890, 0.8…
+$ danceability       &lt;dbl&gt; 0.676, 0.420, 0.438, 0.266, 0.618, 0.688, 0.407, 0.…
+$ energy             &lt;dbl&gt; 0.4610, 0.1660, 0.3590, 0.0596, 0.4430, 0.4810, 0.1…
+$ valence            &lt;dbl&gt; 0.7150, 0.2670, 0.1200, 0.1430, 0.1670, 0.6660, 0.0…
+$ tempo              &lt;dbl&gt; 87.917, 77.489, 76.332, 181.740, 119.949, 98.017, 1…
+$ acousticness_level &lt;fct&gt; Low Acousticness, High Acousticness, Low Acousticne…</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(spotify_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  track_name          artists          track_genre          popularity    
+ Length:76585       Length:76585       Length:76585       Min.   :  1.00  
+ Class :character   Class :character   Class :character   1st Qu.: 23.00  
+ Mode  :character   Mode  :character   Mode  :character   Median : 37.00  
+                                                          Mean   : 37.12  
+                                                          3rd Qu.: 50.00  
+                                                          Max.   :100.00  
+         explicit        loudness        acousticness     danceability   
+ Not Explicit:69963   Min.   :-49.531   Min.   :0.0000   Min.   :0.0000  
+ Explicit    : 6622   1st Qu.:-10.324   1st Qu.:0.0150   1st Qu.:0.4500  
+                      Median : -7.229   Median :0.1840   Median :0.5750  
+                      Mean   : -8.495   Mean   :0.3228   Mean   :0.5617  
+                      3rd Qu.: -5.129   3rd Qu.:0.6140   3rd Qu.:0.6910  
+                      Max.   :  4.532   Max.   :0.9960   Max.   :0.9850  
+     energy          valence           tempo       
+ Min.   :0.0000   Min.   :0.0000   Min.   :  0.00  
+ 1st Qu.:0.4640   1st Qu.:0.2460   1st Qu.: 99.92  
+ Median :0.6820   Median :0.4510   Median :122.38  
+ Mean   :0.6403   Mean   :0.4656   Mean   :122.42  
+ 3rd Qu.:0.8590   3rd Qu.:0.6770   3rd Qu.:140.67  
+ Max.   :1.0000   Max.   :0.9950   Max.   :243.37  
+           acousticness_level
+ Low Acousticness   :45787   
+ Medium Acousticness:13524   
+ High Acousticness  :17274   
+                             
+                             
+                             </code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
