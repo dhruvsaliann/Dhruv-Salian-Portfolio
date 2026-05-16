@@ -1,5 +1,5 @@
 ---
-title: "Project: Spotify Audio Features and Popularity"
+title: "Project: What Makes a Song Popular on Spotify?"
 author: "Dhruv Salian"
 format: html
 execute:
@@ -10,20 +10,23 @@ execute:
 
 ## Data Description
 
-This project explores the **Spotify Tracks Dataset**, obtained from [Kaggle](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset). The dataset contains information about thousands of songs available on Spotify, including audio characteristics and popularity scores assigned by the platform.
+For this project, I used the Spotify Tracks Dataset from [Kaggle](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset). This dataset contains information on over 114,000 songs available on Spotify, including audio characteristics and a popularity score assigned by the platform for each song.
 
-Each row in the dataset represents one unique song. The key variables used in this analysis are:
+Each row in the dataset represents one unique song. The key variables I used in this analysis are:
 
 - **track_name**: The name of the song
-- **artists**: The artist(s) who performed the song
-- **popularity**: A score from 0–100 representing how popular the song is on Spotify
-- **danceability**: How suitable a track is for dancing (0 = least danceable, 1 = most danceable)
-- **energy**: The intensity and activity level of the song (0 = low energy, 1 = high energy)
-- **valence**: The musical positivity of the song (0 = more negative/sad, 1 = more positive/happy)
-- **tempo**: The speed of the song measured in beats per minute (BPM)
-- **track_genre**: The genre of the song
+- **artists**: Who performed the song
+- **popularity**: A number from 0 to 100 showing how popular the song is on Spotify — higher means more popular
+- **explicit**: Whether the song contains explicit content (True or False)
+- **loudness**: How loud the song is, measured in decibels — most songs fall between -50 and 0
+- **acousticness**: How acoustic the song sounds, from 0 (fully electronic) to 1 (fully acoustic)
+- **track_genre**: The genre the song belongs to
 
-The central question driving this analysis is: **What audio features are most associated with higher song popularity on Spotify?**
+The three questions I set out to answer were:
+
+1. Do explicit songs tend to be more popular than non-explicit songs?
+2. Do louder songs tend to be more popular?
+3. Are acoustic songs less popular than electronic-sounding ones?
 
 ---
 
@@ -46,229 +49,230 @@ spotify_raw <- read_csv(here("data", "dataset.csv"))
 ```{r}
 #| label: clean-data
 
-# Step 1: SELECT only the columns relevant to our analysis
-# Removes unnecessary metadata columns like IDs and keys
+# Step 1: SELECT only the columns we need for this analysis
+# This removes unneeded columns like track IDs, album names, and unused audio features
 spotify_clean <- spotify_raw |>
   select(
     track_name,
     artists,
     track_genre,
     popularity,
+    explicit,
+    loudness,
+    acousticness,
     danceability,
     energy,
     valence,
     tempo
   )
 
-# Step 2: FILTER out rows with missing values and
-# remove songs with a popularity of 0 (likely unlisted/unreleased)
+# Step 2: FILTER out missing values and songs with zero popularity
+# Songs with 0 popularity are usually unlisted or unreleased and would skew results
 spotify_clean <- spotify_clean |>
   filter(
     !is.na(popularity),
-    !is.na(danceability),
-    !is.na(energy),
-    !is.na(valence),
-    !is.na(tempo),
+    !is.na(loudness),
+    !is.na(acousticness),
+    !is.na(explicit),
     popularity > 0
   )
 
-# Step 3: MUTATE to create a new categorical variable
-# Groups songs into Low, Medium, or High popularity tiers
+# Step 3: MUTATE to reformat the explicit variable into a clean labeled factor
+# Changes True/False text into readable labels for the visualizations
 spotify_clean <- spotify_clean |>
   mutate(
-    popularity_tier = case_when(
-      popularity < 34              ~ "Low",
-      popularity >= 34 & popularity < 67 ~ "Medium",
-      popularity >= 67             ~ "High"
+    explicit = case_when(
+      explicit == "True"  ~ "Explicit",
+      explicit == "False" ~ "Not Explicit"
     ),
-    popularity_tier = factor(
-      popularity_tier,
-      levels = c("Low", "Medium", "High")
+    explicit = factor(explicit, levels = c("Not Explicit", "Explicit"))
+  )
+
+# Step 4: MUTATE to create acousticness groups
+# Groups songs into Low, Medium, High so we can compare them easily
+spotify_clean <- spotify_clean |>
+  mutate(
+    acousticness_level = case_when(
+      acousticness < 0.33  ~ "Low Acousticness",
+      acousticness < 0.66  ~ "Medium Acousticness",
+      acousticness >= 0.66 ~ "High Acousticness"
+    ),
+    acousticness_level = factor(
+      acousticness_level,
+      levels = c("Low Acousticness", "Medium Acousticness", "High Acousticness")
     )
   )
 
-# Step 4: MUTATE to create an energy category variable
-# Makes energy easier to compare across groups
-spotify_clean <- spotify_clean |>
-  mutate(
-    energy_category = case_when(
-      energy < 0.33  ~ "Low Energy",
-      energy < 0.66  ~ "Medium Energy",
-      energy >= 0.66 ~ "High Energy"
-    ),
-    energy_category = factor(
-      energy_category,
-      levels = c("Low Energy", "Medium Energy", "High Energy")
-    )
-  )
-
-# Step 5: SUMMARIZE to remove duplicate tracks
-# Keeps one row per unique track name and artist combination
+# Step 5: DISTINCT to remove duplicate songs
+# Keeps only one entry per unique song and artist combination
 spotify_clean <- spotify_clean |>
   distinct(track_name, artists, .keep_all = TRUE)
 
-# Step 6: SUMMARIZE average popularity by genre
-# Used later to identify top genres for focused analysis
-genre_summary <- spotify_clean |>
-  group_by(track_genre) |>
+# Step 6: SUMMARIZE average popularity by acousticness group
+# Used for the bar chart in Visualization 3
+acousticness_summary <- spotify_clean |>
+  group_by(acousticness_level) |>
   summarize(
     avg_popularity = mean(popularity, na.rm = TRUE),
     count = n()
   ) |>
   arrange(desc(avg_popularity))
 
-# Save the cleaned dataset to the data folder
+# Save the cleaned dataset
 write_csv(spotify_clean, here("data", "spotify_clean.csv"))
 ```
 
-The raw dataset was cleaned through several steps. First, only the columns relevant to this analysis were kept — removing unneeded identifiers and metadata. Next, songs with missing values or a popularity score of zero were removed, as zero-popularity songs are typically unlisted or unreleased tracks that would skew the results. Two new grouping variables were then created: one categorizing songs into Low, Medium, or High popularity tiers, and another grouping songs by energy level. Duplicate track entries (same song appearing more than once) were also removed to ensure each song was counted only once. Finally, average popularity was calculated by genre to support comparisons across music styles.
+To get the data ready for analysis, I went through several cleaning steps. First, I kept only the columns that were directly relevant to my three research questions and removed everything else like track IDs and album names. Then I filtered out songs with missing values or a popularity score of zero, since zero-popularity songs are usually not publicly available and would throw off the results. I reformatted the explicit column from plain text into a properly labeled category so it would display cleanly in visualizations. I also grouped the acousticness variable into three levels — Low, Medium, and High — since it is easier to compare groups than individual decimal numbers. Finally, I removed duplicate songs so each track only appears once, and calculated average popularity for each acousticness group to use in the bar chart.
 
 ---
 
-## Visualization 1
+## Question 1: Do Explicit Songs Tend to Be More Popular?
 
-This scatterplot explores the relationship between a song's **danceability** and its **popularity** on Spotify. Each point represents one song, colored by its energy category — whether the track is low, medium, or high energy. This helps reveal whether the combination of danceability and energy together influences how popular a song becomes.
+Some people assume that songs with explicit content attract more listeners because they tend to appear in hip-hop and pop — two of the most streamed genres on Spotify. This boxplot compares the full range of popularity scores between explicit and non-explicit songs, showing not just the averages but also how spread out the scores are for each group.
 
 ```{r}
-#| label: fig-danceability-popularity
-#| fig-cap: "Scatterplot showing the relationship between danceability and popularity for Spotify songs, colored by energy level."
-#| fig-alt: "A scatterplot where the x-axis shows danceability scores from 0 to 1 and the y-axis shows popularity scores from 0 to 100. Each point represents a song and is colored green for high energy, blue for medium energy, and orange for low energy. The plot shows a slight positive trend where songs with higher danceability tend to cluster at higher popularity scores, particularly among high-energy songs. Most high-popularity songs (above 60) have danceability scores between 0.5 and 0.9."
+#| label: fig-explicit-popularity
+#| fig-cap: "Boxplot comparing popularity score distributions between explicit and non-explicit songs on Spotify."
+#| fig-alt: "A side by side boxplot with two boxes. The left box represents non-explicit songs and the right box represents explicit songs. The x-axis shows the two groups and the y-axis shows popularity scores from 0 to 100. The median line inside each box shows the middle popularity score for each group. The explicit songs box has a slightly higher median than non-explicit songs. Both boxes have similar spread but explicit songs show a marginally higher overall popularity distribution. Outliers appear as small dots above and below each box."
 
 spotify_clean |>
   ggplot(
     aes(
-      x = danceability,
-      y = popularity,
-      color = energy_category
+      x    = explicit,
+      y    = popularity,
+      fill = explicit
     )
   ) +
-  geom_point(alpha = 0.3, size = 1.2) +
-  geom_smooth(
-    method = "lm",
-    se = FALSE,
-    linewidth = 1,
-    aes(group = energy_category)
+  geom_boxplot(
+    outlier.shape = 21,
+    outlier.size  = 1.2,
+    outlier.alpha = 0.3,
+    width         = 0.5,
+    linewidth     = 0.4
   ) +
-  scale_color_manual(
+  scale_fill_manual(
     values = c(
-      "Low Energy"    = "#E07B54",
-      "Medium Energy" = "#5B8DB8",
-      "High Energy"   = "#4CAF78"
+      "Not Explicit" = "#5B8DB8",
+      "Explicit"     = "#E07B54"
     )
   ) +
   labs(
-    title    = "Do Danceable, High-Energy Songs Become More Popular?",
-    subtitle = "Each point is one Spotify track, colored by energy level",
-    x        = "Danceability (0 = least danceable, 1 = most danceable)",
+    title    = "Are Explicit Songs More Popular on Spotify?",
+    subtitle = "Comparing popularity score distributions for explicit vs non-explicit songs",
+    x        = "Song Type",
     y        = "Popularity Score (0–100)",
-    color    = "Energy Level",
     caption  = "Source: Spotify Tracks Dataset, Kaggle"
   ) +
   theme_minimal(base_size = 13) +
   theme(
-    plot.title    = element_text(face = "bold", size = 14),
-    plot.subtitle = element_text(color = "gray40"),
-    legend.position = "bottom",
+    plot.title         = element_text(face = "bold", size = 14),
+    plot.subtitle      = element_text(color = "gray40", size = 11),
+    legend.position    = "none",
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor   = element_blank(),
+    axis.text.x        = element_text(size = 12)
+  )
+```
+
+Looking at the boxplot, explicit songs do tend to have a slightly higher median popularity score compared to non-explicit songs. However the difference is not dramatic — both groups have a wide spread of popularity scores, meaning there are both very popular and very unpopular songs in each category. This suggests that while explicit content may give a small boost to popularity, it is not the main driver of how well a song performs.
+
+---
+
+## Question 2: Do Louder Songs Tend to Be More Popular?
+
+Loudness is one of the most direct audio features a producer controls. Songs that are louder tend to feel more energetic and punchy, which might make them more enjoyable to listeners. This scatterplot shows how each song's loudness level compares to its popularity score, with a trend line to show the overall direction of the relationship.
+
+```{r}
+#| label: fig-loudness-popularity
+#| fig-cap: "Scatterplot showing the relationship between loudness and popularity for Spotify songs, with a trend line."
+#| fig-alt: "A scatterplot where the x-axis shows loudness values ranging from about negative 50 decibels to 0 decibels, and the y-axis shows popularity scores from 0 to 100. Each point represents one song and is shown in a semi-transparent teal color to show where points overlap. A dark green trend line runs from the bottom left to the upper right of the plot, indicating that as loudness increases toward 0 decibels, popularity scores also tend to be higher. A shaded band around the trend line shows the uncertainty range. Most songs are clustered between negative 20 and 0 decibels."
+
+spotify_clean |>
+  ggplot(
+    aes(
+      x = loudness,
+      y = popularity
+    )
+  ) +
+  geom_point(
+    alpha = 0.15,
+    size  = 0.8,
+    color = "#1D9E75"
+  ) +
+  geom_smooth(
+    method    = "lm",
+    se        = TRUE,
+    color     = "#0F6E56",
+    fill      = "#9FE1CB",
+    linewidth = 1
+  ) +
+  labs(
+    title    = "Do Louder Songs Get More Popular on Spotify?",
+    subtitle = "Each point is one song — the line shows the overall trend",
+    x        = "Loudness (decibels — closer to 0 means louder)",
+    y        = "Popularity Score (0–100)",
+    caption  = "Source: Spotify Tracks Dataset, Kaggle"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title       = element_text(face = "bold", size = 14),
+    plot.subtitle    = element_text(color = "gray40", size = 11),
     panel.grid.minor = element_blank()
   )
 ```
 
----
-
-## Visualization 2
-
-This boxplot compares the **distribution of popularity scores** across the three popularity tiers, broken down by **energy category**. It shows how the spread of popularity differs between low, medium, and high-energy songs within each tier, making it easy to see whether high-energy tracks are more consistently popular or show more variation.
-
-```{r}
-#| label: fig-popularity-by-energy
-#| fig-cap: "Boxplot comparing popularity score distributions across energy categories, grouped by popularity tier."
-#| fig-alt: "A boxplot with three panels arranged side by side, one for each popularity tier: Low, Medium, and High. Within each panel, three boxplots are shown for Low Energy, Medium Energy, and High Energy songs. Each box shows the median popularity score as a horizontal line, with the box spanning the middle 50 percent of values and whiskers extending to the range of typical scores. In the High popularity tier, High Energy songs show a median popularity around 75 with relatively tight spread. Medium and Low energy songs in the same tier show wider variation. In the Low popularity tier, all three energy groups cluster between 1 and 33 with similar distributions."
-
-spotify_clean |>
-  ggplot(
-    aes(
-      x    = energy_category,
-      y    = popularity,
-      fill = energy_category
-    )
-  ) +
-  geom_boxplot(
-    outlier.alpha = 0.2,
-    outlier.size  = 0.8,
-    width         = 0.6
-  ) +
-  facet_wrap(~popularity_tier, labeller = label_both) +
-  scale_fill_manual(
-    values = c(
-      "Low Energy"    = "#E07B54",
-      "Medium Energy" = "#5B8DB8",
-      "High Energy"   = "#4CAF78"
-    )
-  ) +
-  labs(
-    title    = "How Does Energy Level Relate to Popularity Tier?",
-    subtitle = "Popularity score distributions for Low, Medium, and High energy songs",
-    x        = "Energy Category",
-    y        = "Popularity Score (0–100)",
-    fill     = "Energy Level",
-    caption  = "Source: Spotify Tracks Dataset, Kaggle"
-  ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    plot.title      = element_text(face = "bold", size = 14),
-    plot.subtitle   = element_text(color = "gray40"),
-    legend.position = "none",
-    axis.text.x     = element_text(angle = 15, hjust = 1),
-    panel.grid.minor = element_blank(),
-    strip.text      = element_text(face = "bold")
-  )
-```
+The scatterplot shows a clear positive trend — as loudness increases (gets closer to 0 decibels), popularity scores tend to go up as well. Most of the highly popular songs are clustered in the louder range between -10 and 0 decibels, while very quiet songs tend to have lower popularity scores. This makes sense because louder, more polished productions are more common in mainstream music, which naturally attracts more listeners on Spotify.
 
 ---
 
-## Visualization 3
+## Question 3: Are Acoustic Songs Less Popular Than Electronic Ones?
 
-This bar chart shows the **top 10 genres by average popularity** on Spotify. Each bar represents a genre, ordered from most to least popular, giving a clear picture of which music styles perform best on the platform overall.
+Acoustic songs tend to feel more raw and intimate, while heavily produced electronic songs are often designed for mass appeal. This bar chart compares the average popularity of songs grouped by how acoustic they sound — Low, Medium, or High acousticness — to see whether production style plays a role in how well a song performs on Spotify.
 
 ```{r}
-#| label: fig-genre-popularity
-#| fig-cap: "Bar chart of the top 10 Spotify genres ranked by average popularity score."
-#| fig-alt: "A horizontal bar chart showing the top 10 music genres ranked by their average Spotify popularity score. The x-axis shows the average popularity score from 0 to 100 and the y-axis lists the genre names ordered from highest to lowest average popularity. Each bar is colored in a gradient from teal to dark blue based on rank. The top genre has an average popularity near 60 to 70, while the 10th genre is around 40 to 50. Genre names are clearly labeled along the y-axis."
+#| label: fig-acousticness-popularity
+#| fig-cap: "Bar chart comparing average Spotify popularity scores across Low, Medium, and High acousticness groups."
+#| fig-alt: "A horizontal bar chart with three bars representing Low Acousticness, Medium Acousticness, and High Acousticness songs. The y-axis lists the three acousticness groups and the x-axis shows the average popularity score from 0 to 100. The bars are colored in shades of blue from light to dark. The Low Acousticness bar is the longest, indicating the highest average popularity, followed by Medium Acousticness, and then High Acousticness which has the shortest bar and lowest average popularity. Each bar has its exact average score labeled at the end."
 
-genre_summary |>
-  slice_max(avg_popularity, n = 10) |>
+acousticness_summary |>
   mutate(
-    track_genre = fct_reorder(track_genre, avg_popularity)
+    acousticness_level = fct_reorder(acousticness_level, avg_popularity)
   ) |>
   ggplot(
     aes(
       x    = avg_popularity,
-      y    = track_genre,
+      y    = acousticness_level,
       fill = avg_popularity
     )
   ) +
-  geom_col(width = 0.7) +
+  geom_col(width = 0.55) +
   geom_text(
     aes(label = round(avg_popularity, 1)),
     hjust = -0.2,
-    size  = 3.5,
+    size  = 4,
     color = "gray20"
   ) +
-  scale_fill_gradient(low = "#5B8DB8", high = "#1a3a5c") +
-  scale_x_continuous(expand = expansion(mult = c(0, 0.12))) +
+  scale_fill_gradient(low = "#B5D4F4", high = "#0C447C") +
+  scale_x_continuous(
+    limits = c(0, 50),
+    expand = expansion(mult = c(0, 0.08))
+  ) +
   labs(
-    title   = "Which Spotify Genres Have the Highest Average Popularity?",
-    subtitle = "Top 10 genres by mean popularity score",
-    x       = "Average Popularity Score (0–100)",
-    y       = "Genre",
-    caption = "Source: Spotify Tracks Dataset, Kaggle"
+    title    = "Do Acoustic Songs Perform Worse on Spotify?",
+    subtitle = "Average popularity score by acousticness level",
+    x        = "Average Popularity Score (0–100)",
+    y        = "Acousticness Level",
+    caption  = "Source: Spotify Tracks Dataset, Kaggle"
   ) +
   theme_minimal(base_size = 13) +
   theme(
-    plot.title     = element_text(face = "bold", size = 14),
-    plot.subtitle  = element_text(color = "gray40"),
-    legend.position = "none",
+    plot.title         = element_text(face = "bold", size = 14),
+    plot.subtitle      = element_text(color = "gray40", size = 11),
+    legend.position    = "none",
     panel.grid.major.y = element_blank(),
-    panel.grid.minor   = element_blank()
+    panel.grid.minor   = element_blank(),
+    axis.text.y        = element_text(size = 11)
   )
 ```
+
+The bar chart clearly shows that songs with low acousticness — meaning they are more electronic and heavily produced — have the highest average popularity on Spotify. As acousticness increases, average popularity drops. This suggests that mainstream Spotify listeners tend to favor more produced, electronic-sounding music over raw acoustic recordings. This could also be because genres like pop, hip-hop, and electronic music — which dominate Spotify streams — tend to have very low acousticness scores.
