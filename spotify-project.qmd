@@ -1,0 +1,274 @@
+---
+title: "Project: Spotify Audio Features and Popularity"
+author: "Dhruv Salian"
+format: html
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Data Description
+
+This project explores the **Spotify Tracks Dataset**, obtained from [Kaggle](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset). The dataset contains information about thousands of songs available on Spotify, including audio characteristics and popularity scores assigned by the platform.
+
+Each row in the dataset represents one unique song. The key variables used in this analysis are:
+
+- **track_name**: The name of the song
+- **artists**: The artist(s) who performed the song
+- **popularity**: A score from 0–100 representing how popular the song is on Spotify
+- **danceability**: How suitable a track is for dancing (0 = least danceable, 1 = most danceable)
+- **energy**: The intensity and activity level of the song (0 = low energy, 1 = high energy)
+- **valence**: The musical positivity of the song (0 = more negative/sad, 1 = more positive/happy)
+- **tempo**: The speed of the song measured in beats per minute (BPM)
+- **track_genre**: The genre of the song
+
+The central question driving this analysis is: **What audio features are most associated with higher song popularity on Spotify?**
+
+---
+
+## Data Cleaning
+
+```{r}
+#| label: load-packages
+
+library(tidyverse)
+library(here)
+```
+
+```{r}
+#| label: load-data
+
+# Load the raw Spotify dataset using the here package
+spotify_raw <- read_csv(here("data", "dataset.csv"))
+```
+
+```{r}
+#| label: clean-data
+
+# Step 1: SELECT only the columns relevant to our analysis
+# Removes unnecessary metadata columns like IDs and keys
+spotify_clean <- spotify_raw |>
+  select(
+    track_name,
+    artists,
+    track_genre,
+    popularity,
+    danceability,
+    energy,
+    valence,
+    tempo
+  )
+
+# Step 2: FILTER out rows with missing values and
+# remove songs with a popularity of 0 (likely unlisted/unreleased)
+spotify_clean <- spotify_clean |>
+  filter(
+    !is.na(popularity),
+    !is.na(danceability),
+    !is.na(energy),
+    !is.na(valence),
+    !is.na(tempo),
+    popularity > 0
+  )
+
+# Step 3: MUTATE to create a new categorical variable
+# Groups songs into Low, Medium, or High popularity tiers
+spotify_clean <- spotify_clean |>
+  mutate(
+    popularity_tier = case_when(
+      popularity < 34              ~ "Low",
+      popularity >= 34 & popularity < 67 ~ "Medium",
+      popularity >= 67             ~ "High"
+    ),
+    popularity_tier = factor(
+      popularity_tier,
+      levels = c("Low", "Medium", "High")
+    )
+  )
+
+# Step 4: MUTATE to create an energy category variable
+# Makes energy easier to compare across groups
+spotify_clean <- spotify_clean |>
+  mutate(
+    energy_category = case_when(
+      energy < 0.33  ~ "Low Energy",
+      energy < 0.66  ~ "Medium Energy",
+      energy >= 0.66 ~ "High Energy"
+    ),
+    energy_category = factor(
+      energy_category,
+      levels = c("Low Energy", "Medium Energy", "High Energy")
+    )
+  )
+
+# Step 5: SUMMARIZE to remove duplicate tracks
+# Keeps one row per unique track name and artist combination
+spotify_clean <- spotify_clean |>
+  distinct(track_name, artists, .keep_all = TRUE)
+
+# Step 6: SUMMARIZE average popularity by genre
+# Used later to identify top genres for focused analysis
+genre_summary <- spotify_clean |>
+  group_by(track_genre) |>
+  summarize(
+    avg_popularity = mean(popularity, na.rm = TRUE),
+    count = n()
+  ) |>
+  arrange(desc(avg_popularity))
+
+# Save the cleaned dataset to the data folder
+write_csv(spotify_clean, here("data", "spotify_clean.csv"))
+```
+
+The raw dataset was cleaned through several steps. First, only the columns relevant to this analysis were kept — removing unneeded identifiers and metadata. Next, songs with missing values or a popularity score of zero were removed, as zero-popularity songs are typically unlisted or unreleased tracks that would skew the results. Two new grouping variables were then created: one categorizing songs into Low, Medium, or High popularity tiers, and another grouping songs by energy level. Duplicate track entries (same song appearing more than once) were also removed to ensure each song was counted only once. Finally, average popularity was calculated by genre to support comparisons across music styles.
+
+---
+
+## Visualization 1
+
+This scatterplot explores the relationship between a song's **danceability** and its **popularity** on Spotify. Each point represents one song, colored by its energy category — whether the track is low, medium, or high energy. This helps reveal whether the combination of danceability and energy together influences how popular a song becomes.
+
+```{r}
+#| label: fig-danceability-popularity
+#| fig-cap: "Scatterplot showing the relationship between danceability and popularity for Spotify songs, colored by energy level."
+#| fig-alt: "A scatterplot where the x-axis shows danceability scores from 0 to 1 and the y-axis shows popularity scores from 0 to 100. Each point represents a song and is colored green for high energy, blue for medium energy, and orange for low energy. The plot shows a slight positive trend where songs with higher danceability tend to cluster at higher popularity scores, particularly among high-energy songs. Most high-popularity songs (above 60) have danceability scores between 0.5 and 0.9."
+
+spotify_clean |>
+  ggplot(
+    aes(
+      x = danceability,
+      y = popularity,
+      color = energy_category
+    )
+  ) +
+  geom_point(alpha = 0.3, size = 1.2) +
+  geom_smooth(
+    method = "lm",
+    se = FALSE,
+    linewidth = 1,
+    aes(group = energy_category)
+  ) +
+  scale_color_manual(
+    values = c(
+      "Low Energy"    = "#E07B54",
+      "Medium Energy" = "#5B8DB8",
+      "High Energy"   = "#4CAF78"
+    )
+  ) +
+  labs(
+    title    = "Do Danceable, High-Energy Songs Become More Popular?",
+    subtitle = "Each point is one Spotify track, colored by energy level",
+    x        = "Danceability (0 = least danceable, 1 = most danceable)",
+    y        = "Popularity Score (0–100)",
+    color    = "Energy Level",
+    caption  = "Source: Spotify Tracks Dataset, Kaggle"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title    = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(color = "gray40"),
+    legend.position = "bottom",
+    panel.grid.minor = element_blank()
+  )
+```
+
+---
+
+## Visualization 2
+
+This boxplot compares the **distribution of popularity scores** across the three popularity tiers, broken down by **energy category**. It shows how the spread of popularity differs between low, medium, and high-energy songs within each tier, making it easy to see whether high-energy tracks are more consistently popular or show more variation.
+
+```{r}
+#| label: fig-popularity-by-energy
+#| fig-cap: "Boxplot comparing popularity score distributions across energy categories, grouped by popularity tier."
+#| fig-alt: "A boxplot with three panels arranged side by side, one for each popularity tier: Low, Medium, and High. Within each panel, three boxplots are shown for Low Energy, Medium Energy, and High Energy songs. Each box shows the median popularity score as a horizontal line, with the box spanning the middle 50 percent of values and whiskers extending to the range of typical scores. In the High popularity tier, High Energy songs show a median popularity around 75 with relatively tight spread. Medium and Low energy songs in the same tier show wider variation. In the Low popularity tier, all three energy groups cluster between 1 and 33 with similar distributions."
+
+spotify_clean |>
+  ggplot(
+    aes(
+      x    = energy_category,
+      y    = popularity,
+      fill = energy_category
+    )
+  ) +
+  geom_boxplot(
+    outlier.alpha = 0.2,
+    outlier.size  = 0.8,
+    width         = 0.6
+  ) +
+  facet_wrap(~popularity_tier, labeller = label_both) +
+  scale_fill_manual(
+    values = c(
+      "Low Energy"    = "#E07B54",
+      "Medium Energy" = "#5B8DB8",
+      "High Energy"   = "#4CAF78"
+    )
+  ) +
+  labs(
+    title    = "How Does Energy Level Relate to Popularity Tier?",
+    subtitle = "Popularity score distributions for Low, Medium, and High energy songs",
+    x        = "Energy Category",
+    y        = "Popularity Score (0–100)",
+    fill     = "Energy Level",
+    caption  = "Source: Spotify Tracks Dataset, Kaggle"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title      = element_text(face = "bold", size = 14),
+    plot.subtitle   = element_text(color = "gray40"),
+    legend.position = "none",
+    axis.text.x     = element_text(angle = 15, hjust = 1),
+    panel.grid.minor = element_blank(),
+    strip.text      = element_text(face = "bold")
+  )
+```
+
+---
+
+## Visualization 3
+
+This bar chart shows the **top 10 genres by average popularity** on Spotify. Each bar represents a genre, ordered from most to least popular, giving a clear picture of which music styles perform best on the platform overall.
+
+```{r}
+#| label: fig-genre-popularity
+#| fig-cap: "Bar chart of the top 10 Spotify genres ranked by average popularity score."
+#| fig-alt: "A horizontal bar chart showing the top 10 music genres ranked by their average Spotify popularity score. The x-axis shows the average popularity score from 0 to 100 and the y-axis lists the genre names ordered from highest to lowest average popularity. Each bar is colored in a gradient from teal to dark blue based on rank. The top genre has an average popularity near 60 to 70, while the 10th genre is around 40 to 50. Genre names are clearly labeled along the y-axis."
+
+genre_summary |>
+  slice_max(avg_popularity, n = 10) |>
+  mutate(
+    track_genre = fct_reorder(track_genre, avg_popularity)
+  ) |>
+  ggplot(
+    aes(
+      x    = avg_popularity,
+      y    = track_genre,
+      fill = avg_popularity
+    )
+  ) +
+  geom_col(width = 0.7) +
+  geom_text(
+    aes(label = round(avg_popularity, 1)),
+    hjust = -0.2,
+    size  = 3.5,
+    color = "gray20"
+  ) +
+  scale_fill_gradient(low = "#5B8DB8", high = "#1a3a5c") +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.12))) +
+  labs(
+    title   = "Which Spotify Genres Have the Highest Average Popularity?",
+    subtitle = "Top 10 genres by mean popularity score",
+    x       = "Average Popularity Score (0–100)",
+    y       = "Genre",
+    caption = "Source: Spotify Tracks Dataset, Kaggle"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title     = element_text(face = "bold", size = 14),
+    plot.subtitle  = element_text(color = "gray40"),
+    legend.position = "none",
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor   = element_blank()
+  )
+```

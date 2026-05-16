@@ -6,13 +6,13 @@ about:
   links:
     - icon: linkedin
       text: LinkedIn
-      href: https://www.linkedin.com/in/dhruv-salian-414a34306/
+      href: https://www.linkedin.com/in/dhruvsalian/
     - icon: github
       text: GitHub
       href: https://github.com/dhruvsaliann
 ---
-
-Dhruv Salian is a Software Engineering major with a minor in Data Science at California State University, Monterey Bay.
+Dhruv Salian is a Software Engineering major with a minor in Data Science at 
+California State University, Monterey Bay.
 
 ## Education
 
@@ -24,8 +24,18 @@ B.S. in Information Technology \| 2024
 
 ## Experience
 
-**Olympiah** \| Software Engineer \| Jan 2025 – May 2025
+**Capital Insurance Group** \| Software Engineer \| Jan 2026 – Present\
+Building production-grade internal tooling that directly impacts how 
+engineering teams ship software. Capstone Project.
 
-**Compass Higher Ed. Inc** \| Software Assistant \| Aug 2025 – Nov 2025
+**Compass Group USA** \| Assistant Software Engineer \| Aug 2025 – Nov 2025\
+Supported campus-wide software operations and contributed to marketing 
+initiatives in a fast-paced edtech environment.
 
-**Vidyalankar International Institute of Technology** \| Student Assistant \| Oct 2022 – Aug 2023
+**Olympiah** \| Software Engineer \| Jan 2025 – May 2025\
+Delivered measurable performance improvements across web and mobile surfaces 
+by building scalable APIs and dynamic UI components.
+
+**Vidyalankar Institute of Technology** \| Student Assistant \| Oct 2022 – Jan 2023\
+Supported faculty and academic operations at one of India's leading 
+engineering institutions.

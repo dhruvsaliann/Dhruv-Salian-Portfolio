@@ -1,0 +1,194 @@
+---
+title: "Portfolio Part 1: Development and Planning"
+author: "Dhruv Salian"
+format: html
+---
+
+## Data Description
+
+### Data Source
+
+For this project I will use a Spotify dataset obtained from Kaggle, specifically the "Spotify Tracks Dataset." This dataset contains information about songs on Spotify including audio features and popularity scores.
+The dataset can be accessed at: https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset
+
+### Description of Data
+
+Each row in the dataset represents a single song. The dataset includes several variables such as:
+
+* **track_name** (character): the name of the song
+* **artists** (character): the artist(s) who performed the song
+* **popularity** (numeric): a score from 0–100 representing how popular the song is
+* **explicit** (logical): whether the song contains explicit content or not
+* **loudness** (numeric): how loud the song is, measured in decibels
+* **acousticness** (numeric): how acoustic the song sounds, from 0 (electronic) to 1 (fully acoustic)
+* **danceability** (numeric): how suitable a track is for dancing
+* **energy** (numeric): intensity and activity level of the song
+* **valence** (numeric): positivity or mood of the song
+* **tempo** (numeric): speed of the song in beats per minute
+* **track_genre** (character): the genre the song belongs to
+
+These variables include a mix of numeric, character, and logical types.
+
+### Research Questions
+
+1. Do explicit songs tend to be more popular than non-explicit songs on Spotify?
+2. Do louder songs tend to be more popular — is there a relationship between loudness and popularity?
+3. Are acoustic songs less popular than electronic-sounding ones on Spotify?
+
+---
+
+## Data Visualization
+
+### What do you want your final visualizations to look like?
+
+For the first question I plan to create a boxplot comparing the popularity score distributions of explicit and non-explicit songs side by side. For the second question I plan to create a scatterplot showing the relationship between loudness and popularity with a trend line to highlight the direction of the relationship. For the third question I plan to create a horizontal bar chart comparing average popularity across low, medium, and high acousticness groups.
+
+### What do you want to highlight in your visualizations?
+
+I want to highlight whether certain song characteristics — like being explicit, being louder, or being more acoustic — are connected to how popular a song becomes on Spotify. Each visualization will focus on one characteristic and show clearly whether songs with that trait tend to perform better or worse in terms of popularity.
+
+### What is missing from your data or needs to change?
+
+The acousticness variable is a continuous number from 0 to 1, so I will need to group it into Low, Medium, and High categories to make comparisons easier. The explicit variable is stored as text and may need to be converted to a proper logical or factor format for clean visualization.
+
+---
+
+## Data Cleaning
+
+### Do you need to reformat variables?
+
+Yes. I will need to make sure numeric variables like loudness, acousticness, and popularity are correctly formatted. I will also convert the explicit variable from text into a proper labeled format so it reads clearly in visualizations.
+
+### Do you need to deal with missing data?
+
+Yes. I will check all key variables for missing values and remove any rows where important fields are blank or unavailable.
+
+### Do you need to filter your data?
+
+Yes. I will remove songs with a popularity score of zero since those are typically unlisted or unreleased tracks that are not actually available to listeners and would skew the results.
+
+### Do you need to create new variables?
+
+Yes. I will create a grouped acousticness variable with three levels — Low, Medium, and High — to make it easier to compare acoustic versus electronic songs visually.
+
+### Do you need to join additional data?
+
+No. The dataset already contains all the variables needed for this analysis.
+
+### Do you need to pivot your data?
+
+No. The dataset is already in a usable format where each row is one song.
+
+### Do you need to summarize variables?
+
+Yes. I will calculate average popularity scores for each group in the acousticness and explicit comparisons so the bar chart and boxplot are easy to interpret.
+
+### What other cleaning is needed?
+
+I will remove duplicate songs so each track only appears once in the analysis. I will also remove any columns that are not relevant to my research questions, such as track IDs and album names.
+
+### Are there variables you can exclude?
+
+Yes. I plan to exclude variables like track ID, album name, key, mode, time signature, speechiness, instrumentalness, liveness, and tempo since they are not directly relevant to the three research questions I am investigating.
+
+---
+
+## Initial Setup
+
+```{r}
+#| label: load-libraries
+
+# Load libraries
+library(tidyverse)
+library(here)
+```
+
+```{r}
+#| label: load-data
+
+# Import data
+spotify <- read_csv(here("data", "dataset.csv"))
+```
+
+```{r}
+#| label: preview-data
+
+# Preview data
+glimpse(spotify)
+summary(spotify)
+```
+
+```{r}
+#| label: clean-data
+
+# Step 1: SELECT only the columns relevant to our research questions
+spotify_clean <- spotify |>
+  select(
+    track_name,
+    artists,
+    track_genre,
+    popularity,
+    explicit,
+    loudness,
+    acousticness,
+    danceability,
+    energy,
+    valence,
+    tempo
+  )
+
+# Step 2: FILTER out missing values and songs with zero popularity
+# Zero popularity songs are usually unlisted or unreleased
+spotify_clean <- spotify_clean |>
+  filter(
+    !is.na(popularity),
+    !is.na(loudness),
+    !is.na(acousticness),
+    !is.na(explicit),
+    popularity > 0
+  )
+
+# Step 3: MUTATE to reformat the explicit variable
+# Converts True/False text into a clean labeled factor
+spotify_clean <- spotify_clean |>
+  mutate(
+    explicit = case_when(
+      explicit == "True"  ~ "Explicit",
+      explicit == "False" ~ "Not Explicit"
+    ),
+    explicit = factor(explicit, levels = c("Not Explicit", "Explicit"))
+  )
+
+# Step 4: MUTATE to create acousticness groups
+# Groups songs into Low, Medium, High acousticness for easier comparison
+spotify_clean <- spotify_clean |>
+  mutate(
+    acousticness_level = case_when(
+      acousticness < 0.33  ~ "Low Acousticness",
+      acousticness < 0.66  ~ "Medium Acousticness",
+      acousticness >= 0.66 ~ "High Acousticness"
+    ),
+    acousticness_level = factor(
+      acousticness_level,
+      levels = c("Low Acousticness", "Medium Acousticness", "High Acousticness")
+    )
+  )
+
+# Step 5: DISTINCT to remove duplicate songs
+# Keeps only one entry per unique song and artist combination
+spotify_clean <- spotify_clean |>
+  distinct(track_name, artists, .keep_all = TRUE)
+
+# Step 6: SUMMARIZE average popularity by acousticness group
+acousticness_summary <- spotify_clean |>
+  group_by(acousticness_level) |>
+  summarize(
+    avg_popularity = mean(popularity, na.rm = TRUE),
+    count = n()
+  ) |>
+  arrange(desc(avg_popularity))
+
+# Check cleaned data
+glimpse(spotify_clean)
+summary(spotify_clean)
+```

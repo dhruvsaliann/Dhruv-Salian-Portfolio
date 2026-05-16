@@ -1,7 +1,6 @@
 project:
   type: website
   output-dir: docs
-    
 
 website:
   title: "Dhruv's Portfolio"
@@ -11,6 +10,8 @@ website:
         text: "Home"
       - href: about.qmd
         text: "About Me"
+      - href: spotify-project.qmd
+        text: "Spotify Project"
 
 format:
   html:
