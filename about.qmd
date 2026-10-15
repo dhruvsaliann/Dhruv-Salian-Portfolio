@@ -1,5 +1,5 @@
 ---
-title: "Home"
+title: "ABOUT"
 ---
 
 # Dhruv Salian
@@ -25,4 +25,4 @@ I'm currently looking for opportunities in full-stack engineering, platform
 engineering, and developer tooling — places where good engineering directly 
 improves how teams build and ship software.
 
-##WELCOME TO MY PORTFOLIO
+WELCOME TO MY PORTFOLIO

@@ -156,11 +156,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#data-description" id="toc-data-description" class="nav-link active" data-scroll-target="#data-description">Data Description</a></li>
+  <li><a href="#key-findings" id="toc-key-findings" class="nav-link active" data-scroll-target="#key-findings">Key Findings</a></li>
+  <li><a href="#data-description" id="toc-data-description" class="nav-link" data-scroll-target="#data-description">Data Description</a></li>
   <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link" data-scroll-target="#data-cleaning">Data Cleaning</a></li>
-  <li><a href="#question-1-do-explicit-songs-tend-to-be-more-popular" id="toc-question-1-do-explicit-songs-tend-to-be-more-popular" class="nav-link" data-scroll-target="#question-1-do-explicit-songs-tend-to-be-more-popular">Question 1: Do Explicit Songs Tend to Be More Popular?</a></li>
+  <li><a href="#question-1-do-explicit-songs-tend-to-be-more-popular" id="toc-question-1-do-explicit-songs-tend-to-be-more-popular" class="nav-link" data-scroll-target="#question-1-do-explicit-songs-tend-to-be-more-popular">Question 1: Do Explicit Songs Tend to Be More Popular?</a>
+  <ul class="collapse">
+  <li><a href="#is-it-explicitness-or-is-it-genre" id="toc-is-it-explicitness-or-is-it-genre" class="nav-link" data-scroll-target="#is-it-explicitness-or-is-it-genre">Is it explicitness, or is it genre?</a></li>
+  </ul></li>
   <li><a href="#question-2-do-louder-songs-tend-to-be-more-popular" id="toc-question-2-do-louder-songs-tend-to-be-more-popular" class="nav-link" data-scroll-target="#question-2-do-louder-songs-tend-to-be-more-popular">Question 2: Do Louder Songs Tend to Be More Popular?</a></li>
   <li><a href="#question-3-are-acoustic-songs-less-popular-than-electronic-ones" id="toc-question-3-are-acoustic-songs-less-popular-than-electronic-ones" class="nav-link" data-scroll-target="#question-3-are-acoustic-songs-less-popular-than-electronic-ones">Question 3: Are Acoustic Songs Less Popular Than Electronic Ones?</a></li>
+  <li><a href="#putting-it-all-together" id="toc-putting-it-all-together" class="nav-link" data-scroll-target="#putting-it-all-together">Putting It All Together</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a></li>
   </ul>
 </nav>
     </div>
@@ -192,16 +199,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<section id="key-findings" class="level2">
+<h2 class="anchored" data-anchor-id="key-findings">Key Findings</h2>
+<ul>
+<li><strong>Explicit content:</strong> Explicit songs had a median popularity of <strong>40</strong> vs <strong>37</strong> for non-explicit songs (a difference of 4.2 points in the average). Within individual genres, explicit songs scored higher in <strong>33 of 51</strong> genres.</li>
+<li><strong>Loudness:</strong> The Spearman correlation between loudness and popularity is <strong>0.08</strong>, a very weak relationship. The quietest songs actually had the highest average popularity, but that group is small (560 songs).</li>
+<li><strong>Acousticness:</strong> Medium-acousticness songs were the most popular on average (<strong>40.0</strong>), ahead of low (<strong>36.9</strong>) and high (<strong>35.4</strong>). After controlling for genre, acousticness showed no clear relationship with popularity.</li>
+<li><strong>Genre matters:</strong> Genre alone explains <strong>47.1%</strong> of the variation in popularity, while explicit content, loudness, and acousticness together explain only <strong>1.1%</strong>.</li>
+</ul>
+</section>
 <section id="data-description" class="level2">
 <h2 class="anchored" data-anchor-id="data-description">Data Description</h2>
-<p>For this project, I used the Spotify Tracks Dataset from <a href="https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset">Kaggle</a>. This dataset contains information on over 114,000 songs available on Spotify, including audio characteristics and a popularity score assigned by the platform for each song.</p>
-<p>Each row in the dataset represents one unique song. The key variables I used in this analysis are:</p>
+<p>For this project, I used the Spotify Tracks Dataset from <a href="https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset">Kaggle</a>. The raw dataset contains <strong>114,000 rows</strong> of tracks available on Spotify, including audio characteristics and a popularity score assigned by the platform for each track. The same song can appear in more than one row (for example, under different genres), which I handle during cleaning so that each song is counted once.</p>
+<p>The key variables I used in this analysis are:</p>
 <ul>
 <li><strong>track_name</strong>: The name of the song</li>
 <li><strong>artists</strong>: Who performed the song</li>
-<li><strong>popularity</strong>: A number from 0 to 100 showing how popular the song is on Spotify — higher means more popular</li>
+<li><strong>popularity</strong>: A number from 0 to 100 showing how popular the song is on Spotify. Higher means more popular</li>
 <li><strong>explicit</strong>: Whether the song contains explicit content (True or False)</li>
-<li><strong>loudness</strong>: How loud the song is, measured in decibels — most songs fall between -50 and 0</li>
+<li><strong>loudness</strong>: How loud the song is, measured in decibels. Most songs fall between -50 and 0</li>
 <li><strong>acousticness</strong>: How acoustic the song sounds, from 0 (fully electronic) to 1 (fully acoustic)</li>
 <li><strong>track_genre</strong>: The genre the song belongs to</li>
 </ul>
@@ -211,142 +227,116 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Do louder songs tend to be more popular?</li>
 <li>Are acoustic songs less popular than electronic-sounding ones?</li>
 </ol>
+<p>After answering each question on its own, I combine everything into one model to see which factors still matter once the others are held constant.</p>
 <hr>
 </section>
 <section id="data-cleaning" class="level2">
 <h2 class="anchored" data-anchor-id="data-cleaning">Data Cleaning</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the raw Spotify dataset using the here package</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>spotify_raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"dataset.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># keeping only the columns i actually need</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="ot">&lt;-</span> spotify_raw <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    track_name,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    artists,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    track_genre,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    popularity,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    explicit,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    loudness,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    acousticness,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    danceability,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    energy,</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    valence,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    tempo</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># dropping rows with missing values and removing zero popularity songs</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># zero popularity means the song isnt really available to listeners</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="ot">&lt;-</span> spotify_clean <span class="sc">|&gt;</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(popularity),</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(loudness),</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(acousticness),</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(explicit),</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    popularity <span class="sc">&gt;</span> <span class="dv">0</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co"># converting explicit to readable labels</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co"># handling both logical and text formats since the raw data can vary</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="ot">&lt;-</span> spotify_clean <span class="sc">|&gt;</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">explicit =</span> <span class="fu">case_when</span>(</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>      explicit <span class="sc">==</span> <span class="cn">TRUE</span>  <span class="sc">|</span> explicit <span class="sc">==</span> <span class="st">"True"</span>  <span class="sc">~</span> <span class="st">"Explicit"</span>,</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>      explicit <span class="sc">==</span> <span class="cn">FALSE</span> <span class="sc">|</span> explicit <span class="sc">==</span> <span class="st">"False"</span> <span class="sc">~</span> <span class="st">"Not Explicit"</span>,</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Not Explicit"</span></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">explicit =</span> <span class="fu">factor</span>(explicit, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Not Explicit"</span>, <span class="st">"Explicit"</span>))</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co"># bucketing acousticness into three groups so its easier to compare</span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="ot">&lt;-</span> spotify_clean <span class="sc">|&gt;</span></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">acousticness_level =</span> <span class="fu">case_when</span>(</span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>      acousticness <span class="sc">&lt;</span> <span class="fl">0.33</span>  <span class="sc">~</span> <span class="st">"Low Acousticness"</span>,</span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>      acousticness <span class="sc">&lt;</span> <span class="fl">0.66</span>  <span class="sc">~</span> <span class="st">"Medium Acousticness"</span>,</span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>      acousticness <span class="sc">&gt;=</span> <span class="fl">0.66</span> <span class="sc">~</span> <span class="st">"High Acousticness"</span></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">acousticness_level =</span> <span class="fu">factor</span>(</span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>      acousticness_level,</span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Low Acousticness"</span>, <span class="st">"Medium Acousticness"</span>, <span class="st">"High Acousticness"</span>)</span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="co"># removing duplicate tracks so each song only appears once</span></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="ot">&lt;-</span> spotify_clean <span class="sc">|&gt;</span></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(track_name, artists, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="co"># calculating average popularity per acousticness group for the bar chart</span></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>acousticness_summary <span class="ot">&lt;-</span> spotify_clean <span class="sc">|&gt;</span></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(acousticness_level) <span class="sc">|&gt;</span></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_popularity =</span> <span class="fu">mean</span>(popularity, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">count =</span> <span class="fu">n</span>()</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(avg_popularity))</span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="co"># saving the cleaned data</span></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(spotify_clean, <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"spotify_clean.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>To get the data ready for analysis, I went through several cleaning steps. First, I kept only the columns that were directly relevant to my three research questions and removed everything else like track IDs and album names. Then I filtered out songs with missing values or a popularity score of zero since zero-popularity songs are usually not publicly available and would throw off the results. I reformatted the explicit column from plain text into a properly labeled category so it would display cleanly in visualizations. I also grouped the acousticness variable into three levels — Low, Medium, and High since it is easier to compare groups than individual decimal numbers. Finally, I removed duplicate songs so each track only appears once and calculated average popularity for each acousticness group to use in the bar chart.</p>
+<p>To get the data ready for analysis, I went through several cleaning steps. First, I kept only the columns that were directly relevant to my research questions and removed everything else like track IDs and album names. Then I filtered out songs with missing values or a popularity score of zero, since zero-popularity songs are usually not publicly available and would throw off the results. I reformatted the explicit column from plain text into a properly labeled category so it would display cleanly in visualizations. I also grouped the acousticness variable into three levels (Low, Medium, and High) since it is easier to compare groups than individual decimal numbers. Finally, I removed duplicate songs so each track only appears once and calculated average popularity for each acousticness group to use in the bar chart.</p>
+<p>After cleaning, the dataset went from <strong>114,000 rows</strong> to <strong>76,585 unique songs</strong>. One side effect of removing duplicates is that a song listed under several genres keeps only one genre label, so genre labels are approximate.</p>
 <hr>
 </section>
 <section id="question-1-do-explicit-songs-tend-to-be-more-popular" class="level2">
 <h2 class="anchored" data-anchor-id="question-1-do-explicit-songs-tend-to-be-more-popular">Question 1: Do Explicit Songs Tend to Be More Popular?</h2>
-<p>Some people assume that songs with explicit content attract more listeners because they tend to appear in hip-hop and pop which are two of the most streamed genres on Spotify. This violinplot compares the full range of popularity scores between explicit and non-explicit songs, showing not just the averages but also how spread out the scores are for each group.</p>
+<p>Some people assume that songs with explicit content attract more listeners because they tend to appear in hip-hop and pop, which are two of the most streamed genres on Spotify. I start with the numbers for each group, then use a violin plot to compare the full range of popularity scores, showing not just the averages but also how spread out the scores are for each group.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">x    =</span> explicit,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">y    =</span> popularity,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> explicit</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">trim        =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth   =</span> <span class="fl">0.4</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha       =</span> <span class="fl">0.85</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">width     =</span> <span class="fl">0.08</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill      =</span> <span class="st">"white"</span>,</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">color     =</span> <span class="st">"gray30"</span>,</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.4</span>,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">outlier.shape =</span> <span class="cn">NA</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Not Explicit"</span> <span class="ot">=</span> <span class="st">"#5B8DB8"</span>,</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Explicit"</span>     <span class="ot">=</span> <span class="st">"#E07B54"</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Are Explicit Songs More Popular on Spotify?"</span>,</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Shape shows where most songs cluster — wider means more songs at that score"</span>,</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="st">"Song Type"</span>,</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Popularity Score (0–100)"</span>,</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption  =</span> <span class="st">"Source: Spotify Tracks Dataset, Kaggle"</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title         =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle      =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position    =</span> <span class="st">"none"</span>,</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor   =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x        =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>)</span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>explicit_summary <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(mean_popularity, sd_popularity), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">1</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Song Type</span><span class="st">`</span> <span class="ot">=</span> explicit,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Songs       =</span> n,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean        =</span> mean_popularity,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median      =</span> median_popularity,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Std. Dev.</span><span class="st">`</span> <span class="ot">=</span> sd_popularity</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">big.mark =</span> <span class="st">","</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="tbl-explicit-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-explicit-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Popularity summary for explicit and non-explicit songs.
+</figcaption>
+<div aria-describedby="tbl-explicit-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="fig-explicit-popularity" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A violin plot with two shapes side by side. The left violin represents non-explicit songs in blue and the right violin represents explicit songs in orange. The x-axis shows the two song types and the y-axis shows popularity scores from 0 to 100. The width of each violin at any point shows how many songs have that popularity score. The explicit songs violin is wider in the higher popularity range showing more songs with higher scores. A white dot inside each violin marks the median popularity score for that group.">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Song Type</th>
+<th style="text-align: right;">Songs</th>
+<th style="text-align: right;">Mean</th>
+<th style="text-align: right;">Median</th>
+<th style="text-align: right;">Std. Dev.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Not Explicit</td>
+<td style="text-align: right;">69,963</td>
+<td style="text-align: right;">36.8</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">17.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Explicit</td>
+<td style="text-align: right;">6,622</td>
+<td style="text-align: right;">41.0</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">19.3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">x    =</span> explicit,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">y    =</span> popularity,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> explicit</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">trim        =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth   =</span> <span class="fl">0.4</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha       =</span> <span class="fl">0.85</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">width     =</span> <span class="fl">0.08</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill      =</span> <span class="st">"white"</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">color     =</span> <span class="st">"gray30"</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.4</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">outlier.shape =</span> <span class="cn">NA</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Not Explicit"</span> <span class="ot">=</span> <span class="st">"#5B8DB8"</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Explicit"</span>     <span class="ot">=</span> <span class="st">"#E07B54"</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Are Explicit Songs More Popular on Spotify?"</span>,</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Shape shows where most songs cluster — wider means more songs at that score"</span>,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="st">"Song Type"</span>,</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Popularity Score (0–100)"</span>,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption  =</span> <span class="st">"Source: Spotify Tracks Dataset, Kaggle"</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title         =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle      =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position    =</span> <span class="st">"none"</span>,</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor   =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x        =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>)</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-explicit-popularity" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A violin plot with a small white box plot inside each violin. The left violin shows popularity scores for non-explicit songs in blue and the right violin shows scores for explicit songs in orange. The y-axis shows popularity scores from 0 to 100. The width of each violin at any height shows how many songs have that popularity score.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-explicit-popularity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="spotify-project_files/figure-html/fig-explicit-popularity-1.png" class="img-fluid figure-img" alt="A violin plot with two shapes side by side. The left violin represents non-explicit songs in blue and the right violin represents explicit songs in orange. The x-axis shows the two song types and the y-axis shows popularity scores from 0 to 100. The width of each violin at any point shows how many songs have that popularity score. The explicit songs violin is wider in the higher popularity range showing more songs with higher scores. A white dot inside each violin marks the median popularity score for that group." width="672">
+<img src="spotify-project_files/figure-html/fig-explicit-popularity-1.png" class="img-fluid figure-img" alt="A violin plot with a small white box plot inside each violin. The left violin shows popularity scores for non-explicit songs in blue and the right violin shows scores for explicit songs in orange. The y-axis shows popularity scores from 0 to 100. The width of each violin at any height shows how many songs have that popularity score." width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-explicit-popularity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Violin plot comparing popularity score distributions between explicit and non-explicit songs on Spotify.
@@ -355,151 +345,397 @@ Figure&nbsp;1: Violin plot comparing popularity score distributions between expl
 </div>
 </div>
 </div>
-<p>Looking at the violin plot, explicit songs do tend to have a slightly higher median popularity score compared to non-explicit songs. The shape of each violin also shows that most songs in both groups cluster in the low to mid popularity range, with fewer songs reaching the very top. However the difference between the two groups is not dramatic, suggesting that while explicit content may give a small boost to popularity, it is not the main driver of how well a song performs.</p>
-<hr>
-</section>
-<section id="question-2-do-louder-songs-tend-to-be-more-popular" class="level2">
-<h2 class="anchored" data-anchor-id="question-2-do-louder-songs-tend-to-be-more-popular">Question 2: Do Louder Songs Tend to Be More Popular?</h2>
-<p>Loudness is one of the most direct audio features a producer controls. Songs that are louder tend to feel more energetic and punchy, which might make them more enjoyable to listeners. To explore this I grouped all songs into four loudness ranges from very quiet all the way to very loud and looked at how average popularity changes across those groups. The line chart makes it easy to see whether popularity steadily rises as songs get louder</p>
+<p>Explicit songs have a median popularity of 40 compared with 37 for non-explicit songs. On average, explicit songs score 4.2 points higher than non-explicit songs (p &lt; 0.001 on a Wilcoxon rank-sum test). Because the dataset is so large, even tiny differences come out statistically significant, so the size of the gap matters more than the p-value. Here it is a small difference on a 100-point scale. The violins also show that most songs in both groups cluster in the low-to-mid popularity range, with fewer songs reaching the very top.</p>
+<section id="is-it-explicitness-or-is-it-genre" class="level3">
+<h3 class="anchored" data-anchor-id="is-it-explicitness-or-is-it-genre">Is it explicitness, or is it genre?</h3>
+<p>Explicit songs are not spread evenly across genres, so the overall gap could simply reflect which genres they appear in. To check, I compared explicit and non-explicit songs <em>within</em> each genre that had at least 30 songs of each type (51 genres).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>spotify_clean <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">loudness_group =</span> <span class="fu">case_when</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      loudness <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">30</span> <span class="sc">~</span> <span class="st">"-50 to -30 dB</span><span class="sc">\n</span><span class="st">(Very Quiet)"</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      loudness <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">20</span> <span class="sc">~</span> <span class="st">"-30 to -20 dB</span><span class="sc">\n</span><span class="st">(Quiet)"</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      loudness <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">10</span> <span class="sc">~</span> <span class="st">"-20 to -10 dB</span><span class="sc">\n</span><span class="st">(Loud)"</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      loudness <span class="sc">&gt;=</span> <span class="sc">-</span><span class="dv">10</span> <span class="sc">~</span> <span class="st">"-10 to 0 dB</span><span class="sc">\n</span><span class="st">(Very Loud)"</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">loudness_group =</span> <span class="fu">factor</span>(</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      loudness_group,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"-50 to -30 dB</span><span class="sc">\n</span><span class="st">(Very Quiet)"</span>,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"-30 to -20 dB</span><span class="sc">\n</span><span class="st">(Quiet)"</span>,</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"-20 to -10 dB</span><span class="sc">\n</span><span class="st">(Loud)"</span>,</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"-10 to 0 dB</span><span class="sc">\n</span><span class="st">(Very Loud)"</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(loudness_group) <span class="sc">|&gt;</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_popularity =</span> <span class="fu">mean</span>(popularity, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> loudness_group,</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> avg_popularity,</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">group =</span> <span class="dv">1</span></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">color     =</span> <span class="st">"#1D9E75"</span>,</span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">1.2</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> avg_popularity),</span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">5</span></span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(avg_popularity, <span class="dv">1</span>)),</span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">vjust    =</span> <span class="sc">-</span><span class="fl">1.2</span>,</span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">size     =</span> <span class="dv">4</span>,</span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">fontface =</span> <span class="st">"bold"</span>,</span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">color    =</span> <span class="st">"gray20"</span></span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_gradient</span>(<span class="at">low =</span> <span class="st">"#9FE1CB"</span>, <span class="at">high =</span> <span class="st">"#085041"</span>) <span class="sc">+</span></span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">55</span>),</span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>))</span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Do Louder Songs Get More Popular on Spotify?"</span>,</span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Average popularity score rises as songs get louder"</span>,</span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="st">"Loudness Group"</span>,</span>
-<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Average Popularity Score (0–100)"</span>,</span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption  =</span> <span class="st">"Source: Spotify Tracks Dataset, Kaggle"</span></span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
-<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title       =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
-<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle    =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position  =</span> <span class="st">"none"</span>,</span>
-<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x      =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>, <span class="at">lineheight =</span> <span class="fl">1.3</span>)</span>
-<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>genre_diff <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> diff)) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">20</span>, <span class="at">fill =</span> <span class="st">"#E07B54"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray30"</span>) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Explicit vs. Non-Explicit Popularity Gap Within Each Genre"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Values above 0 mean explicit songs were more popular in that genre"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="st">"Average popularity: explicit minus non-explicit (points)"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Number of genres"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption  =</span> <span class="st">"Source: Spotify Tracks Dataset, Kaggle"</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title       =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle    =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="fig-loudness-popularity" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A line chart with four points connected by a line. The x-axis shows four loudness groups from left to right: -50 to -30 dB which is very quiet, -30 to -20 dB which is quiet, -20 to -10 dB which is loud, and -10 to 0 dB which is very loud. The y-axis shows average popularity score from 0 to 100. The line rises steadily from left to right showing that as songs get louder their average popularity increases. Each point on the line has the exact average score labeled above it. The points are colored in a gradient from light to dark green getting darker as loudness increases.">
+<div id="fig-genre-gap" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A histogram where each bar counts genres by the difference in average popularity between explicit and non-explicit songs within that genre. A dashed vertical line marks zero, where explicit and non-explicit songs would be equally popular.">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-loudness-popularity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="spotify-project_files/figure-html/fig-loudness-popularity-1.png" class="img-fluid figure-img" alt="A line chart with four points connected by a line. The x-axis shows four loudness groups from left to right: -50 to -30 dB which is very quiet, -30 to -20 dB which is quiet, -20 to -10 dB which is loud, and -10 to 0 dB which is very loud. The y-axis shows average popularity score from 0 to 100. The line rises steadily from left to right showing that as songs get louder their average popularity increases. Each point on the line has the exact average score labeled above it. The points are colored in a gradient from light to dark green getting darker as loudness increases." width="672">
+<div aria-describedby="fig-genre-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="spotify-project_files/figure-html/fig-genre-gap-1.png" class="img-fluid figure-img" alt="A histogram where each bar counts genres by the difference in average popularity between explicit and non-explicit songs within that genre. A dashed vertical line marks zero, where explicit and non-explicit songs would be equally popular." width="672">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-loudness-popularity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Line chart showing average Spotify popularity across four loudness groups, from very quiet to very loud.
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-genre-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Difference in average popularity (explicit minus non-explicit) within each genre.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>The line chart shows a clear upward trend as songs get louder the average popularity score rises steadily across all four groups. The jump is most noticeable between the quieter groups and the louder ones with very loud songs scoring noticeably higher on average. This makes sense because louder more polished productions are more common in mainstream music which naturally attracts more listeners on Spotify.</p>
+<p>Explicit songs had a higher average popularity in 33 of the 51 genres, and the average within-genre gap was +1.9 points, compared with +4.2 points overall. The gap is smaller within genres than it is overall, which suggests that part of the overall difference comes from the genre mix (explicit songs are concentrated in certain genres) rather than from explicitness itself.</p>
+<hr>
+</section>
+</section>
+<section id="question-2-do-louder-songs-tend-to-be-more-popular" class="level2">
+<h2 class="anchored" data-anchor-id="question-2-do-louder-songs-tend-to-be-more-popular">Question 2: Do Louder Songs Tend to Be More Popular?</h2>
+<p>Loudness is one of the most direct audio features a producer controls. Songs that are louder tend to feel more energetic and punchy, which might make them more enjoyable to listeners. To explore this, I grouped all songs into four loudness ranges, from very quiet all the way to very loud, and looked at how average popularity changes across those groups. The table shows how many songs fall in each group, and the line chart shows whether popularity steadily rises as songs get louder.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>loud_summary <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Loudness Group</span><span class="st">`</span>     <span class="ot">=</span> <span class="fu">str_replace</span>(<span class="fu">as.character</span>(loudness_group), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">" "</span>),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Average Popularity</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(avg_popularity, <span class="dv">1</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">Loudness Group</span><span class="st">`</span>, <span class="at">Songs =</span> n, <span class="st">`</span><span class="at">Average Popularity</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">big.mark =</span> <span class="st">","</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="tbl-loudness-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-loudness-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Number of songs and average popularity in each loudness group.
+</figcaption>
+<div aria-describedby="tbl-loudness-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Loudness Group</th>
+<th style="text-align: right;">Songs</th>
+<th style="text-align: right;">Average Popularity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">-50 to -30 dB (Very Quiet)</td>
+<td style="text-align: right;">560</td>
+<td style="text-align: right;">45.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">-30 to -20 dB (Quiet)</td>
+<td style="text-align: right;">2,550</td>
+<td style="text-align: right;">32.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">-20 to -10 dB (Loud)</td>
+<td style="text-align: right;">17,472</td>
+<td style="text-align: right;">34.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">-10 to 0 dB (Very Loud)</td>
+<td style="text-align: right;">56,003</td>
+<td style="text-align: right;">38.2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>loud_summary <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> loudness_group,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> avg_popularity,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">group =</span> <span class="dv">1</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">color     =</span> <span class="st">"#1D9E75"</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">1.2</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">color =</span> avg_popularity),</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">5</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(avg_popularity, <span class="dv">1</span>)),</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">vjust    =</span> <span class="sc">-</span><span class="fl">1.2</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">size     =</span> <span class="dv">4</span>,</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">fontface =</span> <span class="st">"bold"</span>,</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">color    =</span> <span class="st">"gray20"</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_gradient</span>(<span class="at">low =</span> <span class="st">"#9FE1CB"</span>, <span class="at">high =</span> <span class="st">"#085041"</span>) <span class="sc">+</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">55</span>),</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>))</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Do Louder Songs Get More Popular on Spotify?"</span>,</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Average popularity score by loudness group"</span>,</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="st">"Loudness Group"</span>,</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Average Popularity Score (0–100)"</span>,</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption  =</span> <span class="st">"Source: Spotify Tracks Dataset, Kaggle"</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title       =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle    =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position  =</span> <span class="st">"none"</span>,</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x      =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>, <span class="at">lineheight =</span> <span class="fl">1.3</span>)</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-loudness-popularity" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A line chart with four points connected by a line. The x-axis shows four loudness groups from left to right: -50 to -30 dB which is very quiet, -30 to -20 dB which is quiet, -20 to -10 dB which is loud, and -10 to 0 dB which is very loud. The y-axis shows average popularity score, ranging from 20 to 55. Each point is labeled with its exact average score, and the points get darker green as loudness increases.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-loudness-popularity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="spotify-project_files/figure-html/fig-loudness-popularity-1.png" class="img-fluid figure-img" alt="A line chart with four points connected by a line. The x-axis shows four loudness groups from left to right: -50 to -30 dB which is very quiet, -30 to -20 dB which is quiet, -20 to -10 dB which is loud, and -10 to 0 dB which is very loud. The y-axis shows average popularity score, ranging from 20 to 55. Each point is labeled with its exact average score, and the points get darker green as loudness increases." width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-loudness-popularity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Line chart showing average Spotify popularity across four loudness groups, from very quiet to very loud.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The Spearman correlation between loudness and popularity is 0.08 (p &lt; 0.001), a very weak positive relationship, so loudness tells us very little about popularity on its own. The group averages do not form a simple upward trend: the quietest group has the highest average popularity (45.6), the quiet group has the lowest (32.7), and popularity then rises through the loud and very loud groups (34.0 and 38.2). Group sizes matter here: the quietest group contains only 560 songs compared with 56,003 in the loudest group, so its average is much less reliable and may be driven by a few genres. Genre may also play a role (see “Putting It All Together”).</p>
 <hr>
 </section>
 <section id="question-3-are-acoustic-songs-less-popular-than-electronic-ones" class="level2">
 <h2 class="anchored" data-anchor-id="question-3-are-acoustic-songs-less-popular-than-electronic-ones">Question 3: Are Acoustic Songs Less Popular Than Electronic Ones?</h2>
-<p>Acoustic songs tend to feel more raw and intimate while heavily produced electronic songs are often designed for mass appeal. This bar chart compares the average popularity of songs grouped by how acoustic they sound — Low, Medium, or High acousticness to see whether production style plays a role in how well a song performs on Spotify.</p>
+<p>Acoustic songs tend to feel more raw and intimate, while heavily produced electronic songs are often designed for mass appeal. This section compares the average popularity of songs grouped by how acoustic they sound (Low, Medium, or High acousticness) to see whether production style plays a role in how well a song performs on Spotify.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>acousticness_summary <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">acousticness_level =</span> <span class="fu">fct_reorder</span>(acousticness_level, avg_popularity)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">x    =</span> avg_popularity,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">y    =</span> acousticness_level,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> avg_popularity</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.55</span>) <span class="sc">+</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(avg_popularity, <span class="dv">1</span>)),</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.2</span>,</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">size  =</span> <span class="dv">4</span>,</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"gray20"</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"#B5D4F4"</span>, <span class="at">high =</span> <span class="st">"#0C447C"</span>) <span class="sc">+</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>),</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.08</span>))</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Do Acoustic Songs Perform Worse on Spotify?"</span>,</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Average popularity score by acousticness level"</span>,</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="st">"Average Popularity Score (0–100)"</span>,</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Acousticness Level"</span>,</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption  =</span> <span class="st">"Source: Spotify Tracks Dataset, Kaggle"</span></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title         =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle      =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position    =</span> <span class="st">"none"</span>,</span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor   =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y        =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>)</span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">avg_popularity =</span> <span class="fu">round</span>(avg_popularity, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Acousticness Level</span><span class="st">`</span> <span class="ot">=</span> acousticness_level,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Average Popularity</span><span class="st">`</span> <span class="ot">=</span> avg_popularity,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Songs                =</span> count</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">big.mark =</span> <span class="st">","</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="tbl-acousticness-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-acousticness-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Number of songs and average popularity in each acousticness group.
+</figcaption>
+<div aria-describedby="tbl-acousticness-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="fig-acousticness-popularity" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A horizontal bar chart with three bars representing Low Acousticness, Medium Acousticness, and High Acousticness songs. The y-axis lists the three acousticness groups and the x-axis shows the average popularity score from 0 to 100. The bars are colored in shades of blue from light to dark. The Low Acousticness bar is the longest, indicating the highest average popularity, followed by Medium Acousticness, and then High Acousticness which has the shortest bar and lowest average popularity. Each bar has its exact average score labeled at the end.">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Acousticness Level</th>
+<th style="text-align: right;">Average Popularity</th>
+<th style="text-align: right;">Songs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Medium Acousticness</td>
+<td style="text-align: right;">40.0</td>
+<td style="text-align: right;">13,524</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Low Acousticness</td>
+<td style="text-align: right;">36.9</td>
+<td style="text-align: right;">45,787</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">High Acousticness</td>
+<td style="text-align: right;">35.4</td>
+<td style="text-align: right;">17,274</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>acousticness_summary <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">acousticness_level =</span> <span class="fu">fct_reorder</span>(acousticness_level, avg_popularity)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">x    =</span> avg_popularity,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">y    =</span> acousticness_level,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> avg_popularity</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.55</span>) <span class="sc">+</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(avg_popularity, <span class="dv">1</span>)),</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.2</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">size  =</span> <span class="dv">4</span>,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"gray20"</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"#B5D4F4"</span>, <span class="at">high =</span> <span class="st">"#0C447C"</span>) <span class="sc">+</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>),</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.08</span>))</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Do Acoustic Songs Perform Worse on Spotify?"</span>,</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Average popularity score by acousticness level"</span>,</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="st">"Average Popularity Score (0–100)"</span>,</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Acousticness Level"</span>,</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption  =</span> <span class="st">"Source: Spotify Tracks Dataset, Kaggle"</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title         =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle      =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position    =</span> <span class="st">"none"</span>,</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.minor   =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y        =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>)</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-acousticness-popularity" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A horizontal bar chart with three bars representing Low Acousticness, Medium Acousticness, and High Acousticness songs. The y-axis lists the three acousticness groups and the x-axis shows the average popularity score. The bars are colored in shades of blue from light to dark, and each bar has its exact average score labeled at the end.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-acousticness-popularity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="spotify-project_files/figure-html/fig-acousticness-popularity-1.png" class="img-fluid figure-img" alt="A horizontal bar chart with three bars representing Low Acousticness, Medium Acousticness, and High Acousticness songs. The y-axis lists the three acousticness groups and the x-axis shows the average popularity score from 0 to 100. The bars are colored in shades of blue from light to dark. The Low Acousticness bar is the longest, indicating the highest average popularity, followed by Medium Acousticness, and then High Acousticness which has the shortest bar and lowest average popularity. Each bar has its exact average score labeled at the end." width="672">
+<img src="spotify-project_files/figure-html/fig-acousticness-popularity-1.png" class="img-fluid figure-img" alt="A horizontal bar chart with three bars representing Low Acousticness, Medium Acousticness, and High Acousticness songs. The y-axis lists the three acousticness groups and the x-axis shows the average popularity score. The bars are colored in shades of blue from light to dark, and each bar has its exact average score labeled at the end." width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-acousticness-popularity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Bar chart comparing average Spotify popularity scores across Low, Medium, and High acousticness groups.
+Figure&nbsp;4: Bar chart comparing average Spotify popularity scores across Low, Medium, and High acousticness groups.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>The bar chart clearly shows that songs with low acousticness meaning they are more electronic and heavily produced have the highest average popularity on Spotify. As acousticness increases average popularity drops. This suggests that mainstream Spotify listeners tend to favor more produced electronic sounding music over raw acoustic recordings. This could also be because genres like pop, hip-hop, and electronic music which dominate Spotify streams.</p>
+<p>Songs with low acousticness (more electronic and heavily produced) averaged 36.9 popularity, medium-acousticness songs averaged 40.0, and high-acousticness songs averaged 35.4. A Kruskal-Wallis test comparing the three groups gives p &lt; 0.001, and the pairwise comparisons below (Wilcoxon tests with Bonferroni adjustment) show which groups differ from each other.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(pw_tab)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="tbl-pairwise" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-pairwise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Adjusted p-values for pairwise comparisons between acousticness groups.
+</figcaption>
+<div aria-describedby="tbl-pairwise-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Low Acousticness</th>
+<th style="text-align: left;">Medium Acousticness</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Medium Acousticness</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">High Acousticness</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>All three groups differ significantly from each other. The pattern is not a simple “acoustic songs are less popular” story: medium-acousticness songs score highest, and the gap between low and high is only 1.5 points. These differences could partly reflect which genres tend to be more or less acoustic, so the next section checks whether they hold up once genre is controlled for.</p>
+<hr>
+</section>
+<section id="putting-it-all-together" class="level2">
+<h2 class="anchored" data-anchor-id="putting-it-all-together">Putting It All Together</h2>
+<p>Each question above looked at one factor at a time, but these factors overlap: explicit songs, loud songs, and low-acousticness songs are all more common in certain genres. To separate them, I fit a linear regression predicting popularity from explicit content, loudness, and acousticness while also controlling for genre.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>coef_tbl <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"explicitExplicit"</span>, <span class="st">"loudness"</span>, <span class="st">"acousticness"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Variable =</span> <span class="fu">case_when</span>(</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      term <span class="sc">==</span> <span class="st">"explicitExplicit"</span> <span class="sc">~</span> <span class="st">"Explicit (vs. not explicit)"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>      term <span class="sc">==</span> <span class="st">"loudness"</span>         <span class="sc">~</span> <span class="st">"Loudness (per dB)"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      term <span class="sc">==</span> <span class="st">"acousticness"</span>     <span class="sc">~</span> <span class="st">"Acousticness (0 to 1)"</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">p-value</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.001</span>, <span class="st">"&lt; 0.001"</span>, <span class="fu">sprintf</span>(<span class="st">"%.3f"</span>, p.value))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    Variable,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Estimate  =</span> estimate,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">CI low</span><span class="st">`</span>  <span class="ot">=</span> conf.low,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">CI high</span><span class="st">`</span> <span class="ot">=</span> conf.high,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">p-value</span><span class="st">`</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(Estimate, <span class="st">`</span><span class="at">CI low</span><span class="st">`</span>, <span class="st">`</span><span class="at">CI high</span><span class="st">`</span>), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">2</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="tbl-model" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;5: Linear regression of popularity on explicit content, loudness, and acousticness, controlling for genre.
+</figcaption>
+<div aria-describedby="tbl-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: right;">Estimate</th>
+<th style="text-align: right;">CI low</th>
+<th style="text-align: right;">CI high</th>
+<th style="text-align: left;">p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Explicit (vs.&nbsp;not explicit)</td>
+<td style="text-align: right;">1.79</td>
+<td style="text-align: right;">1.43</td>
+<td style="text-align: right;">2.16</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Loudness (per dB)</td>
+<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Acousticness (0 to 1)</td>
+<td style="text-align: right;">0.03</td>
+<td style="text-align: right;">-0.40</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: left;">0.895</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Holding genre and the other features constant, explicit songs score +1.79 points relative to non-explicit songs, and each additional decibel of loudness is associated with a change of +0.10 points (about +1.0 points per 10 dB). Notably, the explicit gap shrinks from 4.2 points overall to 1.8 points after controlling for genre. Acousticness shows no clear relationship with popularity once genre is accounted for: its estimate is +0.03 points and its confidence interval includes zero.</p>
+<p>To see how much each part matters, I compared how much of the variation in popularity (adjusted R²) different sets of predictors explain:</p>
+<ul>
+<li>Genre alone: <strong>47.1%</strong></li>
+<li>Explicit content, loudness, and acousticness alone: <strong>1.1%</strong></li>
+<li>All of them together: <strong>47.2%</strong></li>
+</ul>
+<p>Even the full model leaves about 52.8% of the variation in popularity unexplained, likely reflecting factors not in this dataset, such as artist fame, marketing, and playlist placement. Almost all of the explained variation comes from genre: adding explicit content, loudness, and acousticness raises the adjusted R² by only 0.1 percentage points.</p>
+<hr>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>Explicit content and loudness are each weakly related to Spotify popularity, and acousticness shows no clear relationship once genre is accounted for. The overall gap between explicit and non-explicit songs is 4.2 points, but it shrinks to 1.8 points after controlling for genre, and loudness has a very weak correlation with popularity (rho = 0.08). Genre alone explains 47.1% of the variation in popularity, compared with 1.1% for the three features combined, so <em>what kind of music a song is</em> matters far more than how loud, acoustic, or explicit it is.</p>
+</section>
+<section id="limitations" class="level2">
+<h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
+<ul>
+<li><strong>Association, not causation.</strong> This analysis shows how popularity relates to these features. It does not show that changing a feature would change a song’s popularity.</li>
+<li><strong>Popularity is a snapshot.</strong> The score reflects when the data was collected and is influenced by things not in the dataset, like artist fame, marketing, and playlist placement.</li>
+<li><strong>Genre labels are approximate.</strong> After removing duplicates, each song keeps only one genre label, even if it was listed under several.</li>
+<li><strong>Predictors overlap.</strong> Loudness and acousticness are correlated with each other (r = -0.57), which can make their separate effects in the regression harder to pin down.</li>
+<li><strong>Simple model.</strong> The regression assumes straight-line relationships, and popularity scores are not normally distributed.</li>
+<li><strong>Filtering choices.</strong> I removed songs with a popularity of zero, which may exclude some real but unpopular tracks.</li>
+<li><strong>Sample.</strong> The dataset is a sample of Spotify tracks and may not represent all music on the platform.</li>
+</ul>
+<hr>
+<p><strong>Tools used:</strong> R, tidyverse, ggplot2, broom, Quarto. <a href="https://github.com/dhruvsaliann/Dhruv-Salian-Portfolio">View the code on GitHub</a>.</p>
 
 
 </section>

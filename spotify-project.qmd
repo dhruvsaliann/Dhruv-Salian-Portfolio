@@ -1,55 +1,35 @@
 ---
 title: "Project: What Makes a Song Popular on Spotify?"
 author: "Dhruv Salian"
-format: html
+format:
+  html:
+    code-fold: true
+    code-summary: "Show code"
 execute:
   echo: true
   warning: false
   message: false
 ---
 
-## Data Description
-
-For this project, I used the Spotify Tracks Dataset from [Kaggle](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset). This dataset contains information on over 114,000 songs available on Spotify, including audio characteristics and a popularity score assigned by the platform for each song.
-
-Each row in the dataset represents one unique song. The key variables I used in this analysis are:
-
-- **track_name**: The name of the song
-- **artists**: Who performed the song
-- **popularity**: A number from 0 to 100 showing how popular the song is on Spotify — higher means more popular
-- **explicit**: Whether the song contains explicit content (True or False)
-- **loudness**: How loud the song is, measured in decibels — most songs fall between -50 and 0
-- **acousticness**: How acoustic the song sounds, from 0 (fully electronic) to 1 (fully acoustic)
-- **track_genre**: The genre the song belongs to
-
-The three questions I set out to answer were:
-
-1. Do explicit songs tend to be more popular than non-explicit songs?
-2. Do louder songs tend to be more popular?
-3. Are acoustic songs less popular than electronic-sounding ones?
-
----
-
-## Data Cleaning
-
 ```{r}
 #| label: load-packages
-
+#| include: false
 library(tidyverse)
 library(here)
+library(broom)
 ```
 
 ```{r}
 #| label: load-data
-
+#| include: false
 # Load the raw Spotify dataset using the here package
 spotify_raw <- read_csv(here("data", "dataset.csv"))
 ```
 
 ```{r}
 #| label: clean-data
-
-# keeping only the columns i actually need
+#| include: false
+# keeping only the columns I actually need
 spotify_clean <- spotify_raw |>
   select(
     track_name,
@@ -66,7 +46,7 @@ spotify_clean <- spotify_raw |>
   )
 
 # dropping rows with missing values and removing zero popularity songs
-# zero popularity means the song isnt really available to listeners
+# zero popularity means the song isn't really available to listeners
 spotify_clean <- spotify_clean |>
   filter(
     !is.na(popularity),
@@ -88,7 +68,7 @@ spotify_clean <- spotify_clean |>
     explicit = factor(explicit, levels = c("Not Explicit", "Explicit"))
   )
 
-# bucketing acousticness into three groups so its easier to compare
+# bucketing acousticness into three groups so it's easier to compare
 spotify_clean <- spotify_clean |>
   mutate(
     acousticness_level = case_when(
@@ -119,18 +99,202 @@ acousticness_summary <- spotify_clean |>
 write_csv(spotify_clean, here("data", "spotify_clean.csv"))
 ```
 
-To get the data ready for analysis, I went through several cleaning steps. First, I kept only the columns that were directly relevant to my three research questions and removed everything else like track IDs and album names. Then I filtered out songs with missing values or a popularity score of zero since zero-popularity songs are usually not publicly available and would throw off the results. I reformatted the explicit column from plain text into a properly labeled category so it would display cleanly in visualizations. I also grouped the acousticness variable into three levels — Low, Medium, and High since it is easier to compare groups than individual decimal numbers. Finally, I removed duplicate songs so each track only appears once and calculated average popularity for each acousticness group to use in the bar chart.
+```{r}
+#| label: compute-stats
+#| include: false
+
+# ---------- small helpers for formatting numbers in the text ----------
+fmt_p  <- function(p) ifelse(p < 0.001, "p < 0.001", paste0("p = ", formatC(p, digits = 3, format = "f")))
+fmt_n  <- function(x) format(x, big.mark = ",")
+r1     <- function(x) formatC(x, digits = 1, format = "f")
+r2     <- function(x) formatC(x, digits = 2, format = "f")
+sgn    <- function(x, d = 2) formatC(x, digits = d, format = "f", flag = "+")
+pct    <- function(x) paste0(formatC(100 * x, digits = 1, format = "f"), "%")
+higher_lower <- function(x) ifelse(x > 0, "higher", "lower")
+gap_label <- function(x) ifelse(abs(x) < 5, "small", ifelse(abs(x) < 10, "moderate", "large"))
+strength_label <- function(r) {
+  ifelse(abs(r) < 0.1, "very weak",
+         ifelse(abs(r) < 0.3, "weak",
+                ifelse(abs(r) < 0.5, "moderate", "strong")))
+}
+
+# ---------- cleaning counts ----------
+n_raw   <- nrow(spotify_raw)
+n_clean <- nrow(spotify_clean)
+
+# ---------- Question 1: explicit vs. not explicit ----------
+explicit_summary <- spotify_clean |>
+  group_by(explicit) |>
+  summarize(
+    n                 = n(),
+    mean_popularity   = mean(popularity),
+    median_popularity = median(popularity),
+    sd_popularity     = sd(popularity),
+    .groups = "drop"
+  )
+
+exp_row <- filter(explicit_summary, explicit == "Explicit")
+non_row <- filter(explicit_summary, explicit == "Not Explicit")
+mean_gap_overall <- exp_row$mean_popularity - non_row$mean_popularity
+
+q1_test <- wilcox.test(popularity ~ explicit, data = spotify_clean, exact = FALSE)
+q1_p    <- q1_test$p.value
+
+# explicit vs. not explicit WITHIN each genre (genres with at least 30 of each type)
+genre_diff <- spotify_clean |>
+  group_by(track_genre, explicit) |>
+  summarize(n = n(), avg = mean(popularity), .groups = "drop") |>
+  pivot_wider(names_from = explicit, values_from = c(n, avg)) |>
+  filter(`n_Not Explicit` >= 30, n_Explicit >= 30) |>
+  mutate(diff = avg_Explicit - `avg_Not Explicit`)
+
+n_genres       <- nrow(genre_diff)
+n_pos          <- sum(genre_diff$diff > 0)
+mean_gap_genre <- mean(genre_diff$diff)
+
+genre_takeaway <- ifelse(
+  abs(mean_gap_genre) < abs(mean_gap_overall),
+  "The gap is smaller within genres than it is overall, which suggests that part of the overall difference comes from the genre mix (explicit songs are concentrated in certain genres) rather than from explicitness itself.",
+  "The gap is not smaller within genres than it is overall, so genre mix does not appear to explain the difference between explicit and non-explicit songs."
+)
+
+# ---------- Question 2: loudness ----------
+loud_levels <- c(
+  "-50 to -30 dB\n(Very Quiet)",
+  "-30 to -20 dB\n(Quiet)",
+  "-20 to -10 dB\n(Loud)",
+  "-10 to 0 dB\n(Very Loud)"
+)
+
+loud_summary <- spotify_clean |>
+  mutate(
+    loudness_group = case_when(
+      loudness < -30 ~ loud_levels[1],
+      loudness < -20 ~ loud_levels[2],
+      loudness < -10 ~ loud_levels[3],
+      loudness >= -10 ~ loud_levels[4]
+    ),
+    loudness_group = factor(loudness_group, levels = loud_levels)
+  ) |>
+  group_by(loudness_group) |>
+  summarize(
+    n = n(),
+    avg_popularity = mean(popularity, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+q2_test <- cor.test(spotify_clean$loudness, spotify_clean$popularity,
+                    method = "spearman", exact = FALSE)
+rho  <- unname(q2_test$estimate)
+q2_p <- q2_test$p.value
+
+# ---------- Question 3: acousticness ----------
+avg_for <- function(level) acousticness_summary$avg_popularity[acousticness_summary$acousticness_level == level]
+avg_low  <- avg_for("Low Acousticness")
+avg_med  <- avg_for("Medium Acousticness")
+avg_high <- avg_for("High Acousticness")
+
+kw   <- kruskal.test(popularity ~ acousticness_level, data = spotify_clean)
+kw_p <- kw$p.value
+
+pw <- pairwise.wilcox.test(
+  spotify_clean$popularity,
+  spotify_clean$acousticness_level,
+  p.adjust.method = "bonferroni",
+  exact = FALSE
+)
+pairs_phrase <- ifelse(
+  all(pw$p.value < 0.05, na.rm = TRUE),
+  "All three groups differ significantly from each other.",
+  "Not every pair of groups differs significantly (see the table)."
+)
+
+pw_tab <- pw$p.value
+pw_tab[] <- ifelse(is.na(pw$p.value), "",
+                   ifelse(pw$p.value < 0.001, "< 0.001", sprintf("%.3f", pw$p.value)))
+
+# ---------- Combined model ----------
+m_full  <- lm(popularity ~ explicit + loudness + acousticness + track_genre, data = spotify_clean)
+m_feat  <- lm(popularity ~ explicit + loudness + acousticness, data = spotify_clean)
+m_genre <- lm(popularity ~ track_genre, data = spotify_clean)
+
+r2_full  <- summary(m_full)$adj.r.squared
+r2_feat  <- summary(m_feat)$adj.r.squared
+r2_genre <- summary(m_genre)$adj.r.squared
+
+coef_tbl <- tidy(m_full, conf.int = TRUE)
+get_b <- function(term_name) coef_tbl$estimate[coef_tbl$term == term_name]
+b_exp  <- get_b("explicitExplicit")
+b_loud <- get_b("loudness")
+b_acou <- get_b("acousticness")
+
+cor_loud_acou <- cor(spotify_clean$loudness, spotify_clean$acousticness)
+```
+
+## Key Findings
+
+- **Explicit content:** Explicit songs had a median popularity of **`r exp_row$median_popularity`** vs **`r non_row$median_popularity`** for non-explicit songs (a difference of `r r1(abs(mean_gap_overall))` points in the average). Within individual genres, explicit songs scored higher in **`r n_pos` of `r n_genres`** genres.
+- **Loudness:** The Spearman correlation between loudness and popularity is **`r r2(rho)`**, a `r strength_label(rho)` relationship. The quietest songs actually had the highest average popularity, but that group is small (`r fmt_n(loud_summary$n[1])` songs).
+- **Acousticness:** Medium-acousticness songs were the most popular on average (**`r r1(avg_med)`**), ahead of low (**`r r1(avg_low)`**) and high (**`r r1(avg_high)`**). After controlling for genre, acousticness showed no clear relationship with popularity.
+- **Genre matters:** Genre alone explains **`r pct(r2_genre)`** of the variation in popularity, while explicit content, loudness, and acousticness together explain only **`r pct(r2_feat)`**.
+
+## Data Description
+
+For this project, I used the Spotify Tracks Dataset from [Kaggle](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset). The raw dataset contains **`r fmt_n(n_raw)` rows** of tracks available on Spotify, including audio characteristics and a popularity score assigned by the platform for each track. The same song can appear in more than one row (for example, under different genres), which I handle during cleaning so that each song is counted once.
+
+The key variables I used in this analysis are:
+
+- **track_name**: The name of the song
+- **artists**: Who performed the song
+- **popularity**: A number from 0 to 100 showing how popular the song is on Spotify. Higher means more popular
+- **explicit**: Whether the song contains explicit content (True or False)
+- **loudness**: How loud the song is, measured in decibels. Most songs fall between -50 and 0
+- **acousticness**: How acoustic the song sounds, from 0 (fully electronic) to 1 (fully acoustic)
+- **track_genre**: The genre the song belongs to
+
+The three questions I set out to answer were:
+
+1. Do explicit songs tend to be more popular than non-explicit songs?
+2. Do louder songs tend to be more popular?
+3. Are acoustic songs less popular than electronic-sounding ones?
+
+After answering each question on its own, I combine everything into one model to see which factors still matter once the others are held constant.
+
+---
+
+## Data Cleaning
+
+To get the data ready for analysis, I went through several cleaning steps. First, I kept only the columns that were directly relevant to my research questions and removed everything else like track IDs and album names. Then I filtered out songs with missing values or a popularity score of zero, since zero-popularity songs are usually not publicly available and would throw off the results. I reformatted the explicit column from plain text into a properly labeled category so it would display cleanly in visualizations. I also grouped the acousticness variable into three levels (Low, Medium, and High) since it is easier to compare groups than individual decimal numbers. Finally, I removed duplicate songs so each track only appears once and calculated average popularity for each acousticness group to use in the bar chart.
+
+After cleaning, the dataset went from **`r fmt_n(n_raw)` rows** to **`r fmt_n(n_clean)` unique songs**. One side effect of removing duplicates is that a song listed under several genres keeps only one genre label, so genre labels are approximate.
 
 ---
 
 ## Question 1: Do Explicit Songs Tend to Be More Popular?
 
-Some people assume that songs with explicit content attract more listeners because they tend to appear in hip-hop and pop which are two of the most streamed genres on Spotify. This violinplot compares the full range of popularity scores between explicit and non-explicit songs, showing not just the averages but also how spread out the scores are for each group.
+Some people assume that songs with explicit content attract more listeners because they tend to appear in hip-hop and pop, which are two of the most streamed genres on Spotify. I start with the numbers for each group, then use a violin plot to compare the full range of popularity scores, showing not just the averages but also how spread out the scores are for each group.
 
 ```{r}
+#| label: tbl-explicit-summary
+#| tbl-cap: "Popularity summary for explicit and non-explicit songs."
+
+explicit_summary |>
+  mutate(across(c(mean_popularity, sd_popularity), ~ round(.x, 1))) |>
+  rename(
+    `Song Type` = explicit,
+    Songs       = n,
+    Mean        = mean_popularity,
+    Median      = median_popularity,
+    `Std. Dev.` = sd_popularity
+  ) |>
+  knitr::kable(format.args = list(big.mark = ","))
+```
+
+```{r}
+#| include: true
 #| label: fig-explicit-popularity
 #| fig-cap: "Violin plot comparing popularity score distributions between explicit and non-explicit songs on Spotify."
-#| fig-alt: "A violin plot with two shapes side by side. The left violin represents non-explicit songs in blue and the right violin represents explicit songs in orange. The x-axis shows the two song types and the y-axis shows popularity scores from 0 to 100. The width of each violin at any point shows how many songs have that popularity score. The explicit songs violin is wider in the higher popularity range showing more songs with higher scores. A white dot inside each violin marks the median popularity score for that group."
+#| fig-alt: "A violin plot with a small white box plot inside each violin. The left violin shows popularity scores for non-explicit songs in blue and the right violin shows scores for explicit songs in orange. The y-axis shows popularity scores from 0 to 100. The width of each violin at any height shows how many songs have that popularity score."
 
 spotify_clean |>
   ggplot(
@@ -176,42 +340,64 @@ spotify_clean |>
   )
 ```
 
-Looking at the violin plot, explicit songs do tend to have a slightly higher median popularity score compared to non-explicit songs. The shape of each violin also shows that most songs in both groups cluster in the low to mid popularity range, with fewer songs reaching the very top. However the difference between the two groups is not dramatic, suggesting that while explicit content may give a small boost to popularity, it is not the main driver of how well a song performs.
+Explicit songs have a median popularity of `r exp_row$median_popularity` compared with `r non_row$median_popularity` for non-explicit songs. On average, explicit songs score `r r1(abs(mean_gap_overall))` points `r higher_lower(mean_gap_overall)` than non-explicit songs (`r fmt_p(q1_p)` on a Wilcoxon rank-sum test). Because the dataset is so large, even tiny differences come out statistically significant, so the size of the gap matters more than the p-value. Here it is a `r gap_label(mean_gap_overall)` difference on a 100-point scale. The violins also show that most songs in both groups cluster in the low-to-mid popularity range, with fewer songs reaching the very top.
+
+### Is it explicitness, or is it genre?
+
+Explicit songs are not spread evenly across genres, so the overall gap could simply reflect which genres they appear in. To check, I compared explicit and non-explicit songs *within* each genre that had at least 30 songs of each type (`r n_genres` genres).
+
+```{r}
+#| label: fig-genre-gap
+#| fig-cap: "Difference in average popularity (explicit minus non-explicit) within each genre."
+#| fig-alt: "A histogram where each bar counts genres by the difference in average popularity between explicit and non-explicit songs within that genre. A dashed vertical line marks zero, where explicit and non-explicit songs would be equally popular."
+
+genre_diff |>
+  ggplot(aes(x = diff)) +
+  geom_histogram(bins = 20, fill = "#E07B54", color = "white") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray30") +
+  labs(
+    title    = "Explicit vs. Non-Explicit Popularity Gap Within Each Genre",
+    subtitle = "Values above 0 mean explicit songs were more popular in that genre",
+    x        = "Average popularity: explicit minus non-explicit (points)",
+    y        = "Number of genres",
+    caption  = "Source: Spotify Tracks Dataset, Kaggle"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title       = element_text(face = "bold", size = 14),
+    plot.subtitle    = element_text(color = "gray40", size = 11),
+    panel.grid.minor = element_blank()
+  )
+```
+
+Explicit songs had a higher average popularity in `r n_pos` of the `r n_genres` genres, and the average within-genre gap was `r sgn(mean_gap_genre, 1)` points, compared with `r sgn(mean_gap_overall, 1)` points overall. `r genre_takeaway`
 
 ---
 
 ## Question 2: Do Louder Songs Tend to Be More Popular?
 
-Loudness is one of the most direct audio features a producer controls. Songs that are louder tend to feel more energetic and punchy, which might make them more enjoyable to listeners. To explore this I grouped all songs into four loudness ranges from very quiet all the way to very loud  and looked at how average popularity changes across those groups. The line chart makes it easy to see whether popularity steadily rises as songs get louder
+Loudness is one of the most direct audio features a producer controls. Songs that are louder tend to feel more energetic and punchy, which might make them more enjoyable to listeners. To explore this, I grouped all songs into four loudness ranges, from very quiet all the way to very loud, and looked at how average popularity changes across those groups. The table shows how many songs fall in each group, and the line chart shows whether popularity steadily rises as songs get louder.
 
 ```{r}
+#| label: tbl-loudness-summary
+#| tbl-cap: "Number of songs and average popularity in each loudness group."
+
+loud_summary |>
+  mutate(
+    `Loudness Group`     = str_replace(as.character(loudness_group), "\n", " "),
+    `Average Popularity` = round(avg_popularity, 1)
+  ) |>
+  select(`Loudness Group`, Songs = n, `Average Popularity`) |>
+  knitr::kable(format.args = list(big.mark = ","))
+```
+
+```{r}
+#| include: true
 #| label: fig-loudness-popularity
 #| fig-cap: "Line chart showing average Spotify popularity across four loudness groups, from very quiet to very loud."
-#| fig-alt: "A line chart with four points connected by a line. The x-axis shows four loudness groups from left to right: -50 to -30 dB which is very quiet, -30 to -20 dB which is quiet, -20 to -10 dB which is loud, and -10 to 0 dB which is very loud. The y-axis shows average popularity score from 0 to 100. The line rises steadily from left to right showing that as songs get louder their average popularity increases. Each point on the line has the exact average score labeled above it. The points are colored in a gradient from light to dark green getting darker as loudness increases."
+#| fig-alt: "A line chart with four points connected by a line. The x-axis shows four loudness groups from left to right: -50 to -30 dB which is very quiet, -30 to -20 dB which is quiet, -20 to -10 dB which is loud, and -10 to 0 dB which is very loud. The y-axis shows average popularity score, ranging from 20 to 55. Each point is labeled with its exact average score, and the points get darker green as loudness increases."
 
-spotify_clean |>
-  mutate(
-    loudness_group = case_when(
-      loudness < -30 ~ "-50 to -30 dB\n(Very Quiet)",
-      loudness < -20 ~ "-30 to -20 dB\n(Quiet)",
-      loudness < -10 ~ "-20 to -10 dB\n(Loud)",
-      loudness >= -10 ~ "-10 to 0 dB\n(Very Loud)"
-    ),
-    loudness_group = factor(
-      loudness_group,
-      levels = c(
-        "-50 to -30 dB\n(Very Quiet)",
-        "-30 to -20 dB\n(Quiet)",
-        "-20 to -10 dB\n(Loud)",
-        "-10 to 0 dB\n(Very Loud)"
-      )
-    )
-  ) |>
-  group_by(loudness_group) |>
-  summarize(
-    avg_popularity = mean(popularity, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
+loud_summary |>
   ggplot(
     aes(
       x = loudness_group,
@@ -241,7 +427,7 @@ spotify_clean |>
   ) +
   labs(
     title    = "Do Louder Songs Get More Popular on Spotify?",
-    subtitle = "Average popularity score rises as songs get louder",
+    subtitle = "Average popularity score by loudness group",
     x        = "Loudness Group",
     y        = "Average Popularity Score (0–100)",
     caption  = "Source: Spotify Tracks Dataset, Kaggle"
@@ -256,18 +442,33 @@ spotify_clean |>
   )
 ```
 
-The line chart shows a clear upward trend as songs get louder the average popularity score rises steadily across all four groups. The jump is most noticeable between the quieter groups and the louder ones with very loud songs scoring noticeably higher on average. This makes sense because louder more polished productions are more common in mainstream music which naturally attracts more listeners on Spotify.
+The Spearman correlation between loudness and popularity is `r r2(rho)` (`r fmt_p(q2_p)`), a `r strength_label(rho)` `r ifelse(rho > 0, "positive", "negative")` relationship, so loudness tells us very little about popularity on its own. The group averages do not form a simple upward trend: the quietest group has the highest average popularity (`r r1(loud_summary$avg_popularity[1])`), the quiet group has the lowest (`r r1(loud_summary$avg_popularity[2])`), and popularity then rises through the loud and very loud groups (`r r1(loud_summary$avg_popularity[3])` and `r r1(loud_summary$avg_popularity[4])`). Group sizes matter here: the quietest group contains only `r fmt_n(loud_summary$n[1])` songs compared with `r fmt_n(loud_summary$n[4])` in the loudest group, so its average is much less reliable and may be driven by a few genres. Genre may also play a role (see "Putting It All Together").
 
 ---
 
 ## Question 3: Are Acoustic Songs Less Popular Than Electronic Ones?
 
-Acoustic songs tend to feel more raw and intimate while heavily produced electronic songs are often designed for mass appeal. This bar chart compares the average popularity of songs grouped by how acoustic they sound — Low, Medium, or High acousticness  to see whether production style plays a role in how well a song performs on Spotify.
+Acoustic songs tend to feel more raw and intimate, while heavily produced electronic songs are often designed for mass appeal. This section compares the average popularity of songs grouped by how acoustic they sound (Low, Medium, or High acousticness) to see whether production style plays a role in how well a song performs on Spotify.
 
 ```{r}
+#| label: tbl-acousticness-summary
+#| tbl-cap: "Number of songs and average popularity in each acousticness group."
+
+acousticness_summary |>
+  mutate(avg_popularity = round(avg_popularity, 1)) |>
+  rename(
+    `Acousticness Level` = acousticness_level,
+    `Average Popularity` = avg_popularity,
+    Songs                = count
+  ) |>
+  knitr::kable(format.args = list(big.mark = ","))
+```
+
+```{r}
+#| include: true
 #| label: fig-acousticness-popularity
 #| fig-cap: "Bar chart comparing average Spotify popularity scores across Low, Medium, and High acousticness groups."
-#| fig-alt: "A horizontal bar chart with three bars representing Low Acousticness, Medium Acousticness, and High Acousticness songs. The y-axis lists the three acousticness groups and the x-axis shows the average popularity score from 0 to 100. The bars are colored in shades of blue from light to dark. The Low Acousticness bar is the longest, indicating the highest average popularity, followed by Medium Acousticness, and then High Acousticness which has the shortest bar and lowest average popularity. Each bar has its exact average score labeled at the end."
+#| fig-alt: "A horizontal bar chart with three bars representing Low Acousticness, Medium Acousticness, and High Acousticness songs. The y-axis lists the three acousticness groups and the x-axis shows the average popularity score. The bars are colored in shades of blue from light to dark, and each bar has its exact average score labeled at the end."
 
 acousticness_summary |>
   mutate(
@@ -310,4 +511,74 @@ acousticness_summary |>
   )
 ```
 
-The bar chart clearly shows that songs with low acousticness  meaning they are more electronic and heavily produced  have the highest average popularity on Spotify. As acousticness increases average popularity drops. This suggests that mainstream Spotify listeners tend to favor more produced electronic sounding music over raw acoustic recordings. This could also be because genres like pop, hip-hop, and electronic music  which dominate Spotify streams.
+Songs with low acousticness (more electronic and heavily produced) averaged `r r1(avg_low)` popularity, medium-acousticness songs averaged `r r1(avg_med)`, and high-acousticness songs averaged `r r1(avg_high)`. A Kruskal-Wallis test comparing the three groups gives `r fmt_p(kw_p)`, and the pairwise comparisons below (Wilcoxon tests with Bonferroni adjustment) show which groups differ from each other.
+
+```{r}
+#| label: tbl-pairwise
+#| tbl-cap: "Adjusted p-values for pairwise comparisons between acousticness groups."
+
+knitr::kable(pw_tab)
+```
+
+`r pairs_phrase` The pattern is not a simple "acoustic songs are less popular" story: medium-acousticness songs score highest, and the gap between low and high is only `r r1(abs(avg_low - avg_high))` points. These differences could partly reflect which genres tend to be more or less acoustic, so the next section checks whether they hold up once genre is controlled for.
+
+---
+
+## Putting It All Together
+
+Each question above looked at one factor at a time, but these factors overlap: explicit songs, loud songs, and low-acousticness songs are all more common in certain genres. To separate them, I fit a linear regression predicting popularity from explicit content, loudness, and acousticness while also controlling for genre.
+
+```{r}
+#| label: tbl-model
+#| tbl-cap: "Linear regression of popularity on explicit content, loudness, and acousticness, controlling for genre."
+
+coef_tbl |>
+  filter(term %in% c("explicitExplicit", "loudness", "acousticness")) |>
+  mutate(
+    Variable = case_when(
+      term == "explicitExplicit" ~ "Explicit (vs. not explicit)",
+      term == "loudness"         ~ "Loudness (per dB)",
+      term == "acousticness"     ~ "Acousticness (0 to 1)"
+    ),
+    `p-value` = ifelse(p.value < 0.001, "< 0.001", sprintf("%.3f", p.value))
+  ) |>
+  select(
+    Variable,
+    Estimate  = estimate,
+    `CI low`  = conf.low,
+    `CI high` = conf.high,
+    `p-value`
+  ) |>
+  mutate(across(c(Estimate, `CI low`, `CI high`), ~ round(.x, 2))) |>
+  knitr::kable()
+```
+
+Holding genre and the other features constant, explicit songs score `r sgn(b_exp)` points relative to non-explicit songs, and each additional decibel of loudness is associated with a change of `r sgn(b_loud)` points (about `r sgn(10 * b_loud, 1)` points per 10 dB). Notably, the explicit gap shrinks from `r r1(mean_gap_overall)` points overall to `r r1(b_exp)` points after controlling for genre. Acousticness shows no clear relationship with popularity once genre is accounted for: its estimate is `r sgn(b_acou)` points and its confidence interval includes zero.
+
+To see how much each part matters, I compared how much of the variation in popularity (adjusted R²) different sets of predictors explain:
+
+- Genre alone: **`r pct(r2_genre)`**
+- Explicit content, loudness, and acousticness alone: **`r pct(r2_feat)`**
+- All of them together: **`r pct(r2_full)`**
+
+Even the full model leaves about `r pct(1 - r2_full)` of the variation in popularity unexplained, likely reflecting factors not in this dataset, such as artist fame, marketing, and playlist placement. Almost all of the explained variation comes from genre: adding explicit content, loudness, and acousticness raises the adjusted R² by only `r r1(100 * (r2_full - r2_genre))` percentage points.
+
+---
+
+## Conclusion
+
+Explicit content and loudness are each weakly related to Spotify popularity, and acousticness shows no clear relationship once genre is accounted for. The overall gap between explicit and non-explicit songs is `r r1(abs(mean_gap_overall))` points, but it shrinks to `r r1(abs(b_exp))` points after controlling for genre, and loudness has a `r strength_label(rho)` correlation with popularity (rho = `r r2(rho)`). Genre alone explains `r pct(r2_genre)` of the variation in popularity, compared with `r pct(r2_feat)` for the three features combined, so *what kind of music a song is* matters far more than how loud, acoustic, or explicit it is.
+
+## Limitations
+
+- **Association, not causation.** This analysis shows how popularity relates to these features. It does not show that changing a feature would change a song's popularity.
+- **Popularity is a snapshot.** The score reflects when the data was collected and is influenced by things not in the dataset, like artist fame, marketing, and playlist placement.
+- **Genre labels are approximate.** After removing duplicates, each song keeps only one genre label, even if it was listed under several.
+- **Predictors overlap.** Loudness and acousticness are correlated with each other (r = `r r2(cor_loud_acou)`), which can make their separate effects in the regression harder to pin down.
+- **Simple model.** The regression assumes straight-line relationships, and popularity scores are not normally distributed.
+- **Filtering choices.** I removed songs with a popularity of zero, which may exclude some real but unpopular tracks.
+- **Sample.** The dataset is a sample of Spotify tracks and may not represent all music on the platform.
+
+---
+
+**Tools used:** R, tidyverse, ggplot2, broom, Quarto. [View the code on GitHub](https://github.com/dhruvsaliann/Dhruv-Salian-Portfolio).
